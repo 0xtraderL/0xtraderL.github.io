@@ -1,15 +1,25 @@
 title: 0xtraderL Blog
-email: your-email@example.com
-description: >- # this means to ignore newlines until 
-  A blog powered by Jekyll and GitHub Pages.
+lang: en
+url: "https://0xtraderl.github.io"
+description: >-
+  A blog powered by Jekyll and Chirpy.
+author:
+  name: 0xtraderL
+  bio: Geek, trader, and blogger.
+  email: your-email@example.com
+
+# Theme
+theme: jekyll-theme-chirpy
+
+# Site settings
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://0xtraderl.github.io" # the base hostname & protocol for your site
+
+# Social links (optional, can be filled later)
+social:
+  github: 0xtraderL
 
 # Build settings
-theme: minima
-plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
+markdown: kramdown
 
 # Exclude from processing
 exclude:
@@ -17,5 +27,3 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor 
-sass:
-  sass_dir: assets/css 
