@@ -25,9 +25,38 @@ highlighter: rouge
 kramdown:
   syntax_highlighter: rouge
 
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-paginate
+
 # Pagination
 paginate: 10
 paginate_path: "/page:num/"
+
+# Collections
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      permalink: /:categories/:year/:month/:day/:title/
+  - scope:
+      path: "_tabs"
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
 
 # Exclude from processing
 exclude:
