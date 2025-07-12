@@ -101,26 +101,4 @@ button, .btn {
   nav a {
     margin: 0 0 0.5rem 0;
   }
-}
-
-// Dark mode
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #181a1b;
-    color: #eaeaea;
-  }
-  nav, .container {
-    background: #181a1b;
-  }
-  a {
-    color: lighten($accent, 15%);
-  }
-  pre, code {
-    background: #23272e;
-    color: #eaeaea;
-  }
-  button, .btn {
-    background: lighten($accent, 10%);
-    color: #181a1b;
-  }
 } 
