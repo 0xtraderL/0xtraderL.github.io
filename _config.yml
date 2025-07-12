@@ -1,10 +1,10 @@
-title: 0xtraderL
-lang: en
+title: traderL
+lang: zh-CN
 url: "https://0xtraderl.github.io"
 description: >-
   A blog powered by Jekyll and Chirpy.
 author:
-  name: 0xtraderL
+  name: traderL
   bio: Geek, trader, and blogger.
   email: your-email@example.com
 
@@ -17,7 +17,7 @@ timezone: Asia/Shanghai
 
 # Social links (optional, can be filled later)
 social:
-  github: 0xtraderL
+  github: ""
 
 # Build settings
 markdown: kramdown
