@@ -15,7 +15,7 @@ theme: jekyll-theme-chirpy
 baseurl: "" # the subpath of your site, e.g. /blog
 timezone: Asia/Shanghai
 
-# Social links (optional, can be filled later)
+# Social links
 social:
   github: 0xtraderL
 
@@ -31,25 +31,10 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-paginate
-  - jekyll-redirect-from
-  - jekyll-archives
-  - jekyll-include-cache
 
 # Pagination
 paginate: 10
 paginate_path: "/page:num/"
-
-# Archives
-jekyll-archives:
-  enabled:
-    - categories
-    - tags
-  layouts:
-    category: category
-    tag: tag
-  permalinks:
-    category: /categories/:name/
-    tag: /tags/:name/
 
 # Collections
 collections:
@@ -72,14 +57,6 @@ defaults:
     values:
       layout: page
       permalink: /:title/
-  - scope:
-      path: "assets/img/favicons"
-    values:
-      swcache: true
-  - scope:
-      path: "assets/js/dist"
-    values:
-      swcache: true
 
 # Exclude from processing
 exclude:
