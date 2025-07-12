@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" href="/assets/images/favicon.svg">
+  {%- seo -%}
+  <script src="/assets/js/darkmode.js"></script>
+</head>
+<body>
+  <nav class="container">
+    <div><a href="/">{{ site.title }}</a></div>
+    <div>
+      <a href="/about/">About</a>
+      <a href="/">Home</a>
+      <!-- Dark mode toggle placeholder -->
+      <span id="darkmode-toggle"></span>
+    </div>
+  </nav>
+  <main class="container">
+    {{ content }}
+  </main>
+  <footer class="container" style="text-align:center; margin-top:2rem; color:#888; font-size:0.95em;">
+    &copy; {{ site.time | date: '%Y' }} {{ site.title }}. Powered by Jekyll.
+  </footer>
+</body>
+</html> 
