@@ -1,1 +1,114 @@
-<feed xmlns="http://www.w3.org/2005/Atom"> <id>https://0xtraderl.github.io/</id> <title>0xtraderL Blog</title> <subtitle>A blog powered by Jekyll and Chirpy.</subtitle> <updated>2025-07-12T12:18:20+08:00</updated> <author> <name></name> <uri>https://0xtraderl.github.io/</uri> </author> <link rel="self" type="application/atom+xml" href="https://0xtraderl.github.io/feed.xml"/> <link rel="alternate" type="text/html" hreflang="en" href="https://0xtraderl.github.io/"/> <generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator> <rights> © 2025 </rights> <icon>/assets/img/favicons/favicon.ico</icon> <logo>/assets/img/favicons/favicon-96x96.png</logo> <entry> <title>测试文章 - Chirpy 主题功能展示</title> <link href="https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post.html" rel="alternate" type="text/html" title="测试文章 - Chirpy 主题功能展示" /> <published>2024-07-12T12:00:00+08:00</published> <updated>2024-07-12T12:00:00+08:00</updated> <id>https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post.html</id> <content type="text/html" src="https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post.html" /> <author> <name></name> </author> <category term="测试" /> <category term="博客" /> <summary>欢迎来到我的 Chirpy 博客！ 这是一篇测试文章，用来展示 Chirpy 主题的各种功能。 功能特性 1. 视频嵌入 这里是一个 YouTube 视频示例： 2. 代码高亮 def hello_world(): print(&amp;quot;Hello, World!&amp;quot;) return &amp;quot;欢迎使用 Chirpy 主题&amp;quot; # 调用函数 message = hello_world() // JavaScript 示例 function greet(name) { return `Hello, ${name}!`; } console.log(greet(&amp;quot;Chirpy&amp;quot;)); 3. 列表功能 无序列表： Chirpy 主题特性 响应式设计 暗黑模式支持 SEO 优化 有序列表： 安装 Jekyll 配置 Chirp...</summary> </entry> <entry> <title>Welcome to 0xtraderL Blog!</title> <link href="https://0xtraderl.github.io/introduction/2024/06/09/welcome.html" rel="alternate" type="text/html" title="Welcome to 0xtraderL Blog!" /> <published>2024-06-09T12:00:00+08:00</published> <updated>2024-06-09T12:00:00+08:00</updated> <id>https://0xtraderl.github.io/introduction/2024/06/09/welcome.html</id> <content type="text/html" src="https://0xtraderl.github.io/introduction/2024/06/09/welcome.html" /> <author> <name></name> </author> <category term="introduction" /> <summary>Welcome to my new blog powered by Jekyll and GitHub Pages! Stay tuned for more content. testss</summary> </entry> </feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-12T12:24:49+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">0xtraderL Blog</title><subtitle>A blog powered by Jekyll and Chirpy.</subtitle><author><name>0xtraderL</name><email>your-email@example.com</email></author><entry><title type="html">测试文章 - Chirpy 主题功能展示</title><link href="https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post/" rel="alternate" type="text/html" title="测试文章 - Chirpy 主题功能展示" /><published>2024-07-12T12:00:00+08:00</published><updated>2024-07-12T12:00:00+08:00</updated><id>https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post</id><content type="html" xml:base="https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post/"><![CDATA[<h1 id="欢迎来到我的-chirpy-博客">欢迎来到我的 Chirpy 博客！</h1>
+
+<p>这是一篇测试文章，用来展示 Chirpy 主题的各种功能。</p>
+
+<h2 id="功能特性">功能特性</h2>
+
+<h3 id="1-视频嵌入">1. 视频嵌入</h3>
+
+<p>这里是一个 YouTube 视频示例：</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<h3 id="2-代码高亮">2. 代码高亮</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Hello, World!</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sh">"</span><span class="s">欢迎使用 Chirpy 主题</span><span class="sh">"</span>
+
+<span class="c1"># 调用函数
+</span><span class="n">message</span> <span class="o">=</span> <span class="nf">hello_world</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// JavaScript 示例</span>
+<span class="kd">function</span> <span class="nf">greet</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">`Hello, </span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">!`</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">greet</span><span class="p">(</span><span class="dl">"</span><span class="s2">Chirpy</span><span class="dl">"</span><span class="p">));</span>
+</code></pre></div></div>
+
+<h3 id="3-列表功能">3. 列表功能</h3>
+
+<p><strong>无序列表：</strong></p>
+<ul>
+  <li>Chirpy 主题特性</li>
+  <li>响应式设计</li>
+  <li>暗黑模式支持</li>
+  <li>SEO 优化</li>
+</ul>
+
+<p><strong>有序列表：</strong></p>
+<ol>
+  <li>安装 Jekyll</li>
+  <li>配置 Chirpy 主题</li>
+  <li>编写博客文章</li>
+  <li>部署到 GitHub Pages</li>
+</ol>
+
+<h3 id="4-引用块">4. 引用块</h3>
+
+<blockquote>
+  <p>“简洁是智慧的灵魂。” - 莎士比亚</p>
+
+  <p>Chirpy 主题正是体现了这种简洁而优雅的设计理念。</p>
+</blockquote>
+
+<h3 id="5-表格">5. 表格</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>功能</th>
+      <th>支持</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>响应式设计</td>
+      <td>✅</td>
+      <td>完美适配移动设备</td>
+    </tr>
+    <tr>
+      <td>暗黑模式</td>
+      <td>✅</td>
+      <td>护眼体验</td>
+    </tr>
+    <tr>
+      <td>代码高亮</td>
+      <td>✅</td>
+      <td>多语言支持</td>
+    </tr>
+    <tr>
+      <td>SEO 优化</td>
+      <td>✅</td>
+      <td>搜索引擎友好</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="6-数学公式">6. 数学公式</h3>
+
+<p>行内公式：$E = mc^2$</p>
+
+<p>块级公式：
+\(\sum_{i=1}^{n} i = \frac{n(n+1)}{2}\)</p>
+
+<h3 id="7-链接和图片">7. 链接和图片</h3>
+
+<ul>
+  <li><a href="https://chirpy.cotes.page/">Chirpy 官方文档</a></li>
+  <li><a href="https://jekyllrb.com/">Jekyll 官网</a></li>
+  <li><a href="https://pages.github.com/">GitHub Pages</a></li>
+</ul>
+
+<hr />
+
+<h2 id="总结">总结</h2>
+
+<p>Chirpy 是一个功能强大、设计优雅的 Jekyll 主题，非常适合技术博客和个人网站。</p>
+
+<p>希望你喜欢这个主题！🎉</p>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="测试" /><category term="博客" /><category term="chirpy" /><category term="jekyll" /><category term="github-pages" /><category term="测试" /><summary type="html"><![CDATA[欢迎来到我的 Chirpy 博客！]]></summary></entry><entry><title type="html">Welcome to 0xtraderL Blog!</title><link href="https://0xtraderl.github.io/introduction/2024/06/09/welcome/" rel="alternate" type="text/html" title="Welcome to 0xtraderL Blog!" /><published>2024-06-09T12:00:00+08:00</published><updated>2024-06-09T12:00:00+08:00</updated><id>https://0xtraderl.github.io/introduction/2024/06/09/welcome</id><content type="html" xml:base="https://0xtraderl.github.io/introduction/2024/06/09/welcome/"><![CDATA[<p>Welcome to my new blog powered by Jekyll and GitHub Pages!</p>
+
+<p>Stay tuned for more content. testss</p>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="introduction" /><summary type="html"><![CDATA[Welcome to my new blog powered by Jekyll and GitHub Pages!]]></summary></entry></feed>

@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://0xtraderl.github.io/introduction/2024/06/09/welcome.html</loc>
+<loc>https://0xtraderl.github.io/introduction/2024/06/09/welcome/</loc>
 <lastmod>2024-06-09T12:00:00+08:00</lastmod>
 </url>
 <url>
-<loc>https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post.html</loc>
+<loc>https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post/</loc>
 <lastmod>2024-07-12T12:00:00+08:00</lastmod>
+</url>
+<url>
+<loc>https://0xtraderl.github.io/categories/</loc>
+<lastmod>2025-07-12T12:24:49+08:00</lastmod>
+</url>
+<url>
+<loc>https://0xtraderl.github.io/tags/</loc>
+<lastmod>2025-07-12T12:24:49+08:00</lastmod>
+</url>
+<url>
+<loc>https://0xtraderl.github.io/archives/</loc>
+<lastmod>2025-07-12T12:24:49+08:00</lastmod>
+</url>
+<url>
+<loc>https://0xtraderl.github.io/about/</loc>
+<lastmod>2025-07-12T12:24:49+08:00</lastmod>
 </url>
 <url>
 <loc>https://0xtraderl.github.io/</loc>
