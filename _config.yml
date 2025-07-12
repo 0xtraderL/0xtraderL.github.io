@@ -17,3 +17,5 @@ exclude:
   - Gemfile.lock
   - node_modules
   - vendor 
+sass:
+  sass_dir: assets/css 
