@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "在sui上实现池子一键再平衡"
-date: 2025-07-12 12:00:00 +0800
+date: 2024-12-19 12:00:00 +0800
 categories: [DeFi]
 tags: [defi, bluefin, clmm]
 ---
