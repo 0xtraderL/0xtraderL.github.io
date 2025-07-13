@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-13T11:12:47+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">0xtraderL Blog</title><subtitle>A blog powered by Jekyll and Chirpy.</subtitle><author><name>0xtraderL</name><email>your-email@example.com</email></author><entry><title type="html">在sui上LP自动再平衡工具</title><link href="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="在sui上LP自动再平衡工具" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-13T11:19:18+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">traderL Blog</title><subtitle>A blog powered by Jekyll and Chirpy.</subtitle><author><name>traderL</name><email>your-email@example.com</email></author><entry><title type="html">在sui上LP自动再平衡工具</title><link href="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="在sui上LP自动再平衡工具" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：</p>
 
 <ol>
   <li>关闭原有的仓位，提取所有流动性, 这里的交易需要签名一次。</li>
@@ -65,8 +65,11 @@
   <li>观察历史仓位收益，调整仓位的价格幅度</li>
 </ol>
 
-<p><img src="/assets/img/posts/2025-06-28/1.webp" alt="LP再平衡执行过程" />
-<img src="/assets/img/posts/2025-06-28/3.png" alt="LP收益统计" /></p>
+<p>LP收益统计：
+<img src="/assets/img/posts/2025-06-28/1.webp" alt="LP收益统计" /></p>
+
+<p>LP再平衡执行过程：
+<img src="/assets/img/posts/2025-06-28/3.png" alt="LP再平衡执行过程" /></p>
 
 <p>使用的工作流工具：</p>
 
@@ -84,4 +87,4 @@
       <li><a href="https://app.kamechan.xyz/workflow/traderL/momentum-pool-yield-comparison-lp-vs-holding">Momentum</a></li>
     </ul>
   </li>
-</ul>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：]]></summary></entry></feed>
+</ul>]]></content><author><name>traderL</name><email>your-email@example.com</email></author><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：]]></summary></entry></feed>
