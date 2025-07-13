@@ -58,8 +58,11 @@ PTB（Programable Transaction Block）简单来说，就是在链下构建交易
 3. 越界后，使用再平衡工作流，让原仓位继续在当前价格范围赚取收益
 4. 观察历史仓位收益，调整仓位的价格幅度
 
-![LP再平衡执行过程](/assets/img/posts/2025-06-28/1.webp)
-![LP收益统计](/assets/img/posts/2025-06-28/3.png)
+LP收益统计：
+![LP收益统计](/assets/img/posts/2025-06-28/1.webp)
+
+LP再平衡执行过程：
+![LP再平衡执行过程](/assets/img/posts/2025-06-28/3.png)
 
 使用的工作流工具：
 
