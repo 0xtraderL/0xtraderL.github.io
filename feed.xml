@@ -1,332 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-12T20:44:20+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">0xtraderL Blog</title><subtitle>A blog powered by Jekyll and Chirpy.</subtitle><author><name>0xtraderL</name><email>your-email@example.com</email></author><entry><title type="html">在sui上实现池子一键再平衡</title><link href="https://0xtraderl.github.io/defi/2024/12/19/auto-rebalance-sui/" rel="alternate" type="text/html" title="在sui上实现池子一键再平衡" /><published>2024-12-19T12:00:00+08:00</published><updated>2024-12-19T12:00:00+08:00</updated><id>https://0xtraderl.github.io/defi/2024/12/19/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/defi/2024/12/19/auto-rebalance-sui/"><![CDATA[<h2 id="痛点lp收益归零的噩梦">痛点：LP收益归零的噩梦</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-13T11:12:47+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">0xtraderL Blog</title><subtitle>A blog powered by Jekyll and Chirpy.</subtitle><author><name>0xtraderL</name><email>your-email@example.com</email></author><entry><title type="html">在sui上LP自动再平衡工具</title><link href="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="在sui上LP自动再平衡工具" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：</p>
 
-<p>做过uniswap v3类型LP的朋友都知道这种绝望：辛辛苦苦研究了半天，选了个看起来不错的价格区间，投入资金开始躺赚手续费。结果第二天一看，币价突破了区间，流动性收益直接归零！</p>
-
-<p>更让人头疼的是重新平衡的过程：</p>
-<ul>
-  <li><strong>撤出流动性</strong>：要等交易确认，还要支付gas</li>
-  <li><strong>重新计算区间</strong>：价格变了，策略也要调整</li>
-  <li><strong>调整代币比例</strong>：通常需要swap一部分代币</li>
-  <li><strong>重新添加流动性</strong>：又是一笔gas费</li>
-</ul>
-
-<p>在以太坊上，光是gas费就能吃掉不少收益。而且整个过程少说也要10-20分钟，期间价格还可能继续变动。</p>
-
-<h2 id="解决方案sui链上的一键再平衡革命">解决方案：sui链上的一键再平衡革命</h2>
-
-<p>好消息是，sui链的出现彻底改变了这个游戏规则。</p>
-
-<p>凭借sui独有的<strong>PTB（Programmable Transaction Blocks）</strong>特性，我成功开发了一套一键再平衡工作流，能够：</p>
-
-<p>✅ <strong>一个交易完成所有操作</strong> - 撤出→计算→swap→重建，全程原子性执行<br />
-✅ <strong>gas费用极低</strong> - 整套操作成本不到$2，比传统方法便宜90%<br />
-✅ <strong>零滑点风险</strong> - 所有参数提前计算好，避免中间价格变动<br />
-✅ <strong>5分钟完成</strong> - 从触发到完成，全程自动化</p>
-
-<h2 id="ptbsui的杀手级特性">PTB：sui的杀手级特性</h2>
-
-<p>PTB到底有多强大？简单来说，它就像把原本需要跑多趟银行的业务，变成了一次性在网银完成所有操作。</p>
-
-<p><strong>传统链的痛点：</strong></p>
-<ul>
-  <li>每个操作都是独立交易 → 多次gas费用</li>
-  <li>操作间有时间间隔 → 价格变动风险</li>
-  <li>任何一步失败都很麻烦 → 需要手动回滚</li>
-</ul>
-
-<p><strong>PTB的革命性优势：</strong></p>
-<ul>
-  <li>多个操作打包执行 → 一次性完成</li>
-  <li>原子性保证 → 要么全成功，要么全失败</li>
-  <li>链下计算，链上执行 → 精确控制每个参数</li>
-  <li>极低gas消耗 → 让频繁操作成为可能</li>
-</ul>
-
-<p>这就是为什么我选择在sui上开发再平衡工作流的根本原因。</p>
-
-<h2 id="再平衡工作原理深度解析">再平衡工作原理深度解析</h2>
-
-<p>让我详细解释一下工作流背后的核心逻辑：</p>
-
-<h3 id="第一步智能监控与触发">第一步：智能监控与触发</h3>
-<p>工作流会持续监控你的LP仓位状态，当价格超出设定区间时自动触发再平衡。这比手动监控效率高太多，再也不用担心睡觉时错过最佳调整时机。</p>
-
-<h3 id="第二步精确计算最优策略">第二步：精确计算最优策略</h3>
-<p>这是整套系统的大脑。工作流会：</p>
-<ul>
-  <li>分析当前市场价格和波动率</li>
-  <li>根据你的风险偏好计算最优价格区间</li>
-  <li>精确计算两种代币的理想配比</li>
-  <li>考虑交易成本，确保操作后收益最大化</li>
-</ul>
-
-<h3 id="第三步原子性执行再平衡">第三步：原子性执行再平衡</h3>
-<p>所有计算完成后，PTB会在一个交易中完成：</p>
 <ol>
-  <li><strong>撤出现有流动性</strong> - 获得当前持有的代币数量</li>
-  <li><strong>智能代币调换</strong> - 根据新区间要求调整代币比例</li>
-  <li><strong>重建流动性仓位</strong> - 在最优区间重新提供流动性</li>
+  <li>关闭原有的仓位，提取所有流动性, 这里的交易需要签名一次。</li>
+  <li>考虑新仓位的价格区间，然后计算所需要的币种A和B，再swap 对应数量的A或者B, 这里进行swap交易, 需要签名一次。</li>
+  <li>根据2获得的数量和预设的价格区间，重新添加流动性建立仓位，这里需要签名一次。</li>
 </ol>
 
-<p>整个过程完全原子性，任何一步出问题都会自动回滚，保证资金安全。</p>
+<p>自己手动重组LP需要上述3个步骤，而且步骤2不借助工具还不好计算。现在有不少自平衡链上协议比如AlphaFi，可以在超出区间时候自动平衡，但是他的价格范围是协议决定的，没办法根据自己的策略进行调整，通常价格范围比较大，而且只适用与少量主流池子，比较适合不想折腾的懒人。我基本不会用这类协议。</p>
 
-<h3 id="第四步持续优化与监控">第四步：持续优化与监控</h3>
-<p>重建完成后，工作流继续监控新仓位，为下一次可能的调整做准备。</p>
+<h2 id="sui-ptb-特性实现一键再平衡">SUI PTB 特性实现一键再平衡</h2>
 
-<h2 id="真实收益对比数据说话">真实收益对比：数据说话</h2>
+<p>在以太坊上我还真不知道在不利用链上合约的情况下，如何在链下解决。但是在sui上，这个问题不是问题。这里捧一下sui，sui真的是为解决实际问题而生的链，非常适合开发各种应用，gas成本低，安全性高，速度还快, 有非常多的特性比如赞助交易、ZkLogin、PTB编程等，能很容易实现用户友好的具有创新性的App。</p>
 
-<p>让我用一个真实案例来展示差异：</p>
+<p>重点说下PTB特性，这个功能确实很强大：</p>
 
-<p><strong>场景：USDC-SUI LP，初始价格$2.0</strong></p>
+<p>PTB（Programable Transaction Block）简单来说，就是在链下构建交易时，可以一次性打包多个操作。看起来普通，但实际应用场景很广泛。</p>
 
-<p><strong>传统手动操作：</strong></p>
+<p><strong>传统链上操作的问题：</strong></p>
 <ul>
-  <li>撤出流动性：$5 gas + 3分钟等待</li>
-  <li>Swap调整比例：$8 gas + 可能的滑点损失</li>
-  <li>重新添加流动性：$5 gas + 2分钟等待</li>
-  <li><strong>总成本：$18+ + 5-10分钟 + 滑点风险</strong></li>
+  <li>复杂操作需要分解成多个独立交易</li>
+  <li>每个交易都要单独签名确认，流程繁琐</li>
+  <li>中间任何一步失败，前面的操作可能已经执行</li>
+  <li>Gas费累积，成本较高</li>
 </ul>
 
-<p><strong>使用我的工作流：</strong></p>
+<p><strong>PTB的优势：</strong></p>
 <ul>
-  <li>一键触发：$1.8 gas + 自动执行</li>
-  <li>零滑点：所有参数预先计算</li>
-  <li>快速完成：2-3分钟搞定</li>
-  <li><strong>总成本：$1.8 + 无滑点 + 极速完成</strong></li>
+  <li>多个操作在链下组装成一个交易块</li>
+  <li>一次签名，要么全部成功，要么全部失败</li>
+  <li>原子性执行，避免中间状态</li>
+  <li>Gas费用显著降低，因为本质上是单个交易</li>
 </ul>
 
-<p>成本降低90%，效率提升300%，这就是技术进步带来的红利！</p>
-
-<h2 id="进阶功能不只是简单再平衡">进阶功能：不只是简单再平衡</h2>
-
-<p>我的工作流不仅仅是简单的区间重设，还包含了多种智能策略：</p>
-
-<h3 id="动态区间优化">动态区间优化</h3>
-<ul>
-  <li>根据历史波动率自动调整区间宽度</li>
-  <li>高波动时设置宽区间，低波动时优化资金效率</li>
-  <li>避免过于频繁的调整，平衡成本和收益</li>
-</ul>
-
-<h3 id="多层流动性策略">多层流动性策略</h3>
-<ul>
-  <li>同时在多个价格层级提供流动性</li>
-  <li>主仓位追求高收益，保险仓位防范极端行情</li>
-  <li>智能分配资金比例，最大化整体收益</li>
-</ul>
-
-<h3 id="交易量热点分析">交易量热点分析</h3>
-<ul>
-  <li>分析DEX历史数据，识别交易最活跃的价格区间</li>
-  <li>优先在高手续费收入区域提供流动性</li>
-  <li>动态调整策略适应市场变化</li>
-</ul>
-
-<h2 id="风险管控安全第一">风险管控：安全第一</h2>
-
-<p>任何DeFi操作都有风险，我的工作流内置了多重保护机制：</p>
-
-<h3 id="智能风控系统">智能风控系统</h3>
-<ul>
-  <li><strong>滑点保护</strong>：超过设定滑点自动中止交易</li>
-  <li><strong>价格异常检测</strong>：识别异常价格波动，避免恶意攻击</li>
-  <li><strong>资金安全锁定</strong>：关键参数多重验证，防止误操作</li>
-</ul>
-
-<h3 id="收益监控告警">收益监控告警</h3>
-<ul>
-  <li><strong>实时收益跟踪</strong>：对比手动操作和自动策略的收益差异</li>
-  <li><strong>异常情况提醒</strong>：及时发现策略失效或市场异常</li>
-  <li><strong>历史数据分析</strong>：帮助优化策略参数</li>
-</ul>
-
-<h3 id="用户控制权限">用户控制权限</h3>
-<ul>
-  <li><strong>完全透明</strong>：所有操作逻辑开源可查</li>
-  <li><strong>参数可调</strong>：根据个人风险偏好调整策略</li>
-  <li><strong>随时退出</strong>：保留完全的资金控制权</li>
-</ul>
-
-<h2 id="为什么选择我的工作流">为什么选择我的工作流？</h2>
-
-<p>市面上确实有一些自动化LP管理协议，但大多数都有明显缺陷：</p>
-
-<p>❌ <strong>中心化托管</strong>：需要把资金转入协议，失去控制权<br />
-❌ <strong>策略固化</strong>：无法根据个人需求自定义参数<br />
-❌ <strong>费用高昂</strong>：管理费+性能费，侵蚀收益<br />
-❌ <strong>反应迟钝</strong>：批量处理，错过最佳调整时机</p>
-
-<p>我的工作流完全不同：</p>
-
-<p>✅ <strong>资金自控</strong>：LP代币始终在你的钱包，完全自主控制<br />
-✅ <strong>策略灵活</strong>：多种预设策略+自定义参数<br />
-✅ <strong>成本透明</strong>：只有链上gas费，无额外收费<br />
-✅ <strong>实时响应</strong>：基于PTB的即时执行</p>
-
-<h2 id="立即体验两套成熟方案">立即体验：两套成熟方案</h2>
-
-<p>经过数月的开发和测试，我为大家准备了两套完整的工作流方案：</p>
-
-<h3 id="-方案一新手友好版">🎯 方案一：新手友好版</h3>
-<p><strong>适合人群</strong>：DeFi新手，希望简单安全地提升LP收益<br />
-<strong>特色功能</strong>：</p>
-<ul>
-  <li>预设安全参数，开箱即用</li>
-  <li>保守的再平衡策略，降低无常损失</li>
-  <li>详细的操作指引和风险提示</li>
-  <li>24/7客服支持</li>
-</ul>
-
-<p><strong>👉 <a href="#">点击体验新手版工作流</a></strong></p>
-
-<h3 id="-方案二专业定制版">🚀 方案二：专业定制版</h3>
-<p><strong>适合人群</strong>：有经验的DeFi玩家，追求最大化收益<br />
-<strong>特色功能</strong>：</p>
-<ul>
-  <li>全面的参数自定义选项</li>
-  <li>多种高级策略组合</li>
-  <li>实时市场数据分析</li>
-  <li>专业收益报告</li>
-</ul>
-
-<p><strong>👉 <a href="#">点击体验专业版工作流</a></strong></p>
-
-<h2 id="真实用户反馈">真实用户反馈</h2>
-
-<blockquote>
-  <p>“用了一个月，LP收益比之前手动操作提升了30%，而且完全不用操心。强烈推荐！” - 用户@CryptoMaster</p>
-</blockquote>
-
-<blockquote>
-  <p>“PTB技术确实厉害，一个交易搞定所有操作，gas费几乎可以忽略。” - 用户@DeFiExplorer</p>
-</blockquote>
-
-<blockquote>
-  <p>“最喜欢的是策略透明，所有逻辑都能看到，比那些黑盒协议放心多了。” - 用户@SafeInvestor</p>
-</blockquote>
-
-<h2 id="开始你的sui-lp自动化之旅">开始你的sui LP自动化之旅</h2>
-
-<p>sui生态正在快速发展，早期参与者总是能获得更多红利。通过自动化工具提升效率，专注于策略研究而不是重复操作，这就是智能投资的核心。</p>
-
-<p>别让手动操作的低效率继续拖累你的收益。现在就体验一键再平衡的便利，加入sui DeFi自动化的先锋队伍！</p>
-
-<p><strong>选择你的方案，立即开始：</strong></p>
-
-<p>🎯 <strong><a href="#">新手版工作流 - 安全稳健</a></strong><br />
-🚀 <strong><a href="#">专业版工作流 - 收益最大化</a></strong></p>
-
-<p>有任何问题欢迎在评论区交流，我会及时回复大家的疑问。也期待听到你们的使用体验和改进建议！</p>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="clmm" /><summary type="html"><![CDATA[痛点：LP收益归零的噩梦]]></summary></entry><entry><title type="html">测试文章 - Chirpy 主题功能展示</title><link href="https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post/" rel="alternate" type="text/html" title="测试文章 - Chirpy 主题功能展示" /><published>2024-07-12T12:00:00+08:00</published><updated>2024-07-12T12:00:00+08:00</updated><id>https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post</id><content type="html" xml:base="https://0xtraderl.github.io/%E6%B5%8B%E8%AF%95/%E5%8D%9A%E5%AE%A2/2024/07/12/test-post/"><![CDATA[<h1 id="欢迎来到我的-chirpy-博客">欢迎来到我的 Chirpy 博客！</h1>
-
-<p>这是一篇测试文章，用来展示 Chirpy 主题的各种功能。</p>
-
-<h2 id="功能特性">功能特性</h2>
-
-<h3 id="1-视频嵌入">1. 视频嵌入</h3>
-
-<p>这里是一个 YouTube 视频示例：</p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
-
-<h3 id="2-代码高亮">2. 代码高亮</h3>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
-    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Hello, World!</span><span class="sh">"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="sh">"</span><span class="s">欢迎使用 Chirpy 主题</span><span class="sh">"</span>
-
-<span class="c1"># 调用函数
-</span><span class="n">message</span> <span class="o">=</span> <span class="nf">hello_world</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// JavaScript 示例</span>
-<span class="kd">function</span> <span class="nf">greet</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s2">`Hello, </span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">!`</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nf">greet</span><span class="p">(</span><span class="dl">"</span><span class="s2">Chirpy</span><span class="dl">"</span><span class="p">));</span>
-</code></pre></div></div>
-
-<h3 id="3-列表功能">3. 列表功能</h3>
-
-<p><strong>无序列表：</strong></p>
-<ul>
-  <li>Chirpy 主题特性</li>
-  <li>响应式设计</li>
-  <li>暗黑模式支持</li>
-  <li>SEO 优化</li>
-</ul>
-
-<p><strong>有序列表：</strong></p>
+<p>举个实际例子：LP再平衡操作，传统evm方式需要：</p>
 <ol>
-  <li>安装 Jekyll</li>
-  <li>配置 Chirpy 主题</li>
-  <li>编写博客文章</li>
-  <li>部署到 GitHub Pages</li>
+  <li>撤出流动性 → 签名确认 → 等待</li>
+  <li>Swap代币调整比例 → 签名确认 → 等待</li>
+  <li>重新添加流动性 → 签名确认 → 等待</li>
 </ol>
 
-<h3 id="4-引用块">4. 引用块</h3>
+<p>使用PTB：</p>
+<ol>
+  <li>链下构建：
+    <ul>
+      <li>关闭仓位撤出流动性拿到已撤出的代币数量 （此时还没执行交易， 代币还在这个交易里，可以传递给下个操作）</li>
+      <li>根据上步骤获得的代币数量进行swap</li>
+      <li>根据上步骤的swap后的数量，重新创建仓位</li>
+    </ul>
+  </li>
+  <li>一次签名提交上述交易</li>
+  <li>链上原子性执行</li>
+</ol>
 
-<blockquote>
-  <p>“简洁是智慧的灵魂。” - 莎士比亚</p>
+<p>利用PTB还能在链下进行闪电贷的套利，而这在以太坊系上只能开发合约进行。</p>
 
-  <p>Chirpy 主题正是体现了这种简洁而优雅的设计理念。</p>
-</blockquote>
+<p>这就是为什么我能在sui上实现一键再平衡，而在其他链上这种操作成本和复杂度都很高。</p>
 
-<h3 id="5-表格">5. 表格</h3>
+<h2 id="我的工作流">我的工作流</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th>功能</th>
-      <th>支持</th>
-      <th>说明</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>响应式设计</td>
-      <td>✅</td>
-      <td>完美适配移动设备</td>
-    </tr>
-    <tr>
-      <td>暗黑模式</td>
-      <td>✅</td>
-      <td>护眼体验</td>
-    </tr>
-    <tr>
-      <td>代码高亮</td>
-      <td>✅</td>
-      <td>多语言支持</td>
-    </tr>
-    <tr>
-      <td>SEO 优化</td>
-      <td>✅</td>
-      <td>搜索引擎友好</td>
-    </tr>
-  </tbody>
-</table>
+<ol>
+  <li>投入资金首次创建仓位</li>
+  <li>监控仓位状态，如果越界则telegram发通知提醒</li>
+  <li>越界后，使用再平衡工作流，让原仓位继续在当前价格范围赚取收益</li>
+  <li>观察历史仓位收益，调整仓位的价格幅度</li>
+</ol>
 
-<h3 id="6-数学公式">6. 数学公式</h3>
+<p><img src="/assets/img/posts/2025-06-28/1.webp" alt="LP再平衡执行过程" />
+<img src="/assets/img/posts/2025-06-28/3.png" alt="LP收益统计" /></p>
 
-<p>行内公式：$E = mc^2$</p>
-
-<p>块级公式：
-\(\sum_{i=1}^{n} i = \frac{n(n+1)}{2}\)</p>
-
-<h3 id="7-链接和图片">7. 链接和图片</h3>
+<p>使用的工作流工具：</p>
 
 <ul>
-  <li><a href="https://chirpy.cotes.page/">Chirpy 官方文档</a></li>
-  <li><a href="https://jekyllrb.com/">Jekyll 官网</a></li>
-  <li><a href="https://pages.github.com/">GitHub Pages</a></li>
-</ul>
-
-<hr />
-
-<h2 id="总结">总结</h2>
-
-<p>Chirpy 是一个功能强大、设计优雅的 Jekyll 主题，非常适合技术博客和个人网站。</p>
-
-<p>希望你喜欢这个主题！🎉</p>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="测试" /><category term="博客" /><category term="chirpy" /><category term="jekyll" /><category term="github-pages" /><category term="测试" /><summary type="html"><![CDATA[欢迎来到我的 Chirpy 博客！]]></summary></entry><entry><title type="html">Welcome to 0xtraderL Blog!</title><link href="https://0xtraderl.github.io/introduction/2024/06/09/welcome/" rel="alternate" type="text/html" title="Welcome to 0xtraderL Blog!" /><published>2024-06-09T12:00:00+08:00</published><updated>2024-06-09T12:00:00+08:00</updated><id>https://0xtraderl.github.io/introduction/2024/06/09/welcome</id><content type="html" xml:base="https://0xtraderl.github.io/introduction/2024/06/09/welcome/"><![CDATA[<p>Welcome to my new blog powered by Jekyll and GitHub Pages!</p>
-
-<p>Stay tuned for more content. testss</p>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="introduction" /><summary type="html"><![CDATA[Welcome to my new blog powered by Jekyll and GitHub Pages!]]></summary></entry></feed>
+  <li>仓位越界监控</li>
+  <li>一键再平衡
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-automated-percentage-based-rebalancing">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/mmt-automated-liquidity-position-rebalancing">Momentum</a></li>
+    </ul>
+  </li>
+  <li>历史仓位收益(LP vs Holding)
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-yield-comparison-lp-vs-holding">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/momentum-pool-yield-comparison-lp-vs-holding">Momentum</a></li>
+    </ul>
+  </li>
+</ul>]]></content><author><name>0xtraderL</name><email>your-email@example.com</email></author><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：]]></summary></entry></feed>
