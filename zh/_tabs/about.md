@@ -6,6 +6,8 @@ order: 4
 lang: zh
 ---
 
+{% include language-switcher.html %}
+
 # 关于我
 
 我是 traderL，一个极客、交易者和博主。

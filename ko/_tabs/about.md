@@ -6,6 +6,8 @@ order: 4
 lang: ko
 ---
 
+{% include language-switcher.html %}
+
 # 나에 대해
 
 저는 traderL, 괴짜, 트레이더, 블로거입니다.

@@ -6,6 +6,8 @@ order: 4
 lang: ja
 ---
 
+{% include language-switcher.html %}
+
 # 私について
 
 私は traderL、ギーク、トレーダー、ブロガーです。
