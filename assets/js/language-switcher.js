@@ -1,5 +1,7 @@
 // Enhanced Language Switcher with Dynamic Creation
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
+  'use strict';
+  
   // Get current language from URL path
   const currentPath = window.location.pathname;
   let currentLang = 'en';
@@ -22,38 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     'ja': { name: '日本語', flag: '🇯🇵', path: '/ja/' },
     'ko': { name: '한국어', flag: '🇰🇷', path: '/ko/' }
   };
-  
-  // Create language switcher HTML
-  function createLanguageSwitcher() {
-    const currentLangInfo = languages[currentLang];
-    
-    const switcher = document.createElement('div');
-    switcher.className = 'language-switcher-fixed';
-    switcher.innerHTML = `
-      <div class="language-switcher">
-        <div class="custom-dropdown">
-          <button class="dropdown-toggle" type="button" id="languageDropdown" onclick="toggleLanguageDropdown()">
-            ${currentLangInfo.flag} ${currentLangInfo.name}
-            <span class="dropdown-arrow">▼</span>
-          </button>
-          <ul class="dropdown-menu" id="languageDropdownMenu">
-            ${Object.keys(languages).filter(lang => lang !== currentLang).map(lang => 
-              `<li>
-                <a class="dropdown-item" href="${lang === 'en' ? '/' : `/${lang}/`}">
-                  ${languages[lang].flag} ${languages[lang].name}
-                </a>
-              </li>`
-            ).join('')}
-          </ul>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(switcher);
-  }
-  
-  // Create the switcher
-  createLanguageSwitcher();
   
   // Function to switch language
   function switchLanguage(targetLang) {
@@ -80,82 +50,118 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = newPath + currentSearch;
   }
   
-  // Bind language switcher events
-  function bindLanguageSwitcher() {
+  // Create language switcher HTML
+  function createLanguageSwitcher() {
+    const currentLangInfo = languages[currentLang];
+    
+    const switcher = document.createElement('div');
+    switcher.className = 'language-switcher-fixed';
+    switcher.innerHTML = `
+      <div class="language-switcher">
+        <div class="custom-dropdown">
+          <button class="dropdown-toggle" type="button" id="languageDropdown">
+            ${currentLangInfo.flag} ${currentLangInfo.name}
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          <ul class="dropdown-menu" id="languageDropdownMenu">
+            ${Object.keys(languages).filter(lang => lang !== currentLang).map(lang => 
+              `<li>
+                <a class="dropdown-item" href="${lang === 'en' ? '/' : `/${lang}/`}" data-lang="${lang}">
+                  ${languages[lang].flag} ${languages[lang].name}
+                </a>
+              </li>`
+            ).join('')}
+          </ul>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(switcher);
+    
+    // Add event listeners after creating the element
+    bindEvents();
+  }
+  
+  // Bind events
+  function bindEvents() {
+    const dropdownToggle = document.getElementById('languageDropdown');
+    const dropdownMenu = document.getElementById('languageDropdownMenu');
+    const dropdownArrow = document.querySelector('.dropdown-arrow');
     const languageLinks = document.querySelectorAll('.language-switcher .dropdown-item');
     
+    if (dropdownToggle) {
+      dropdownToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (dropdownMenu.style.display === 'block') {
+          dropdownMenu.style.display = 'none';
+          dropdownArrow.innerHTML = '▼';
+        } else {
+          dropdownMenu.style.display = 'block';
+          dropdownArrow.innerHTML = '▲';
+        }
+      });
+    }
+    
+    // Bind language switching
     languageLinks.forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
-        const href = this.getAttribute('href');
-        
-        let targetLang = 'en';
-        if (href.startsWith('/zh/')) {
-          targetLang = 'zh';
-        } else if (href.startsWith('/ja/')) {
-          targetLang = 'ja';
-        } else if (href.startsWith('/ko/')) {
-          targetLang = 'ko';
+        const targetLang = this.getAttribute('data-lang');
+        if (targetLang) {
+          switchLanguage(targetLang);
         }
-        
-        switchLanguage(targetLang);
       });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.querySelector('.custom-dropdown');
+      if (dropdown && !dropdown.contains(event.target)) {
+        if (dropdownMenu && dropdownArrow) {
+          dropdownMenu.style.display = 'none';
+          dropdownArrow.innerHTML = '▼';
+        }
+      }
     });
   }
   
-  // Global function for dropdown toggle
-  window.toggleLanguageDropdown = function() {
-    const dropdown = document.getElementById('languageDropdownMenu');
-    const arrow = document.querySelector('.dropdown-arrow');
+  // Initialize when DOM is ready
+  function init() {
+    createLanguageSwitcher();
     
-    if (dropdown.style.display === 'block') {
-      dropdown.style.display = 'none';
-      arrow.innerHTML = '▼';
-    } else {
-      dropdown.style.display = 'block';
-      arrow.innerHTML = '▲';
-    }
-  };
-  
-  // Close dropdown when clicking outside
-  document.addEventListener('click', function(event) {
-    const dropdown = document.querySelector('.custom-dropdown');
-    if (dropdown && !dropdown.contains(event.target)) {
-      const menu = document.getElementById('languageDropdownMenu');
-      const arrow = document.querySelector('.dropdown-arrow');
-      if (menu) {
-        menu.style.display = 'none';
-        arrow.innerHTML = '▼';
+    // Store language preference
+    localStorage.setItem('preferred-language', currentLang);
+    
+    // Auto-redirect based on browser language preference (first visit only)
+    if (localStorage.getItem('first-visit') === null) {
+      const browserLang = navigator.language || navigator.userLanguage;
+      let detectedLang = 'en';
+      
+      if (browserLang.startsWith('zh')) {
+        detectedLang = 'zh';
+      } else if (browserLang.startsWith('ja')) {
+        detectedLang = 'ja';
+      } else if (browserLang.startsWith('ko')) {
+        detectedLang = 'ko';
+      }
+      
+      const isHomePage = currentPath === '/' || currentPath === '/index.html';
+      
+      if (isHomePage && detectedLang !== 'en' && currentLang === 'en') {
+        localStorage.setItem('first-visit', 'done');
+        switchLanguage(detectedLang);
+      } else {
+        localStorage.setItem('first-visit', 'done');
       }
     }
-  });
-  
-  // Initialize after creating the switcher
-  setTimeout(bindLanguageSwitcher, 100);
-  
-  // Store language preference
-  localStorage.setItem('preferred-language', currentLang);
-  
-  // Auto-redirect based on browser language preference (first visit only)
-  if (localStorage.getItem('first-visit') === null) {
-    const browserLang = navigator.language || navigator.userLanguage;
-    let detectedLang = 'en';
-    
-    if (browserLang.startsWith('zh')) {
-      detectedLang = 'zh';
-    } else if (browserLang.startsWith('ja')) {
-      detectedLang = 'ja';
-    } else if (browserLang.startsWith('ko')) {
-      detectedLang = 'ko';
-    }
-    
-    const isHomePage = currentPath === '/' || currentPath === '/index.html';
-    
-    if (isHomePage && detectedLang !== 'en' && currentLang === 'en') {
-      localStorage.setItem('first-visit', 'done');
-      switchLanguage(detectedLang);
-    } else {
-      localStorage.setItem('first-visit', 'done');
-    }
   }
-}); 
+  
+  // Start when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})(); 

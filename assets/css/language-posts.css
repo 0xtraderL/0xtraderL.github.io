@@ -1,4 +1,4 @@
-/* Language Switcher Only - Minimal CSS */
+/* Language Switcher - Complete CSS */
 .language-switcher-fixed {
   position: fixed;
   top: 20px;
@@ -10,47 +10,76 @@
 
 .language-switcher {
   position: relative;
+  display: inline-block;
+}
+
+.language-switcher .custom-dropdown {
+  position: relative;
 }
 
 .language-switcher .dropdown-toggle {
   background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border-color, #dee2e6);
   color: var(--text-color, inherit);
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s ease;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
   font-weight: 500;
   cursor: pointer;
-  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  outline: none;
 }
 
 .language-switcher .dropdown-toggle:hover {
   background: var(--btn-hover-bg, rgba(0, 0, 0, 0.05));
+  border-color: var(--btn-hover-border-color, #c6cbd1);
+}
+
+.language-switcher .dropdown-toggle:focus {
+  box-shadow: 0 0 0 2px var(--focus-color, rgba(0, 123, 255, 0.25));
+}
+
+.language-switcher .dropdown-arrow {
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease;
 }
 
 .language-switcher .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
   background: var(--card-bg, #fff);
-  border-radius: 0.25rem;
+  border: 1px solid var(--card-border-color, #dee2e6);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   min-width: 150px;
   list-style: none;
   padding: 0.5rem 0;
   margin: 0;
   margin-top: 0.25rem;
   display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
   z-index: 1000;
 }
 
+.language-switcher .dropdown-menu li {
+  margin: 0;
+  padding: 0;
+}
+
 .language-switcher .dropdown-item {
+  display: block;
   color: var(--text-color, inherit);
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
+  text-decoration: none;
   transition: background-color 0.2s ease;
   font-weight: 500;
-  display: block;
-  text-decoration: none;
+  white-space: nowrap;
 }
 
 .language-switcher .dropdown-item:hover {
@@ -58,9 +87,10 @@
   color: var(--text-color, inherit);
 }
 
-.language-switcher .dropdown-arrow {
-  font-size: 0.75rem;
-  margin-left: 0.5rem;
+.language-switcher .dropdown-item:focus {
+  background: var(--btn-hover-bg, rgba(0, 0, 0, 0.05));
+  color: var(--text-color, inherit);
+  outline: none;
 }
 
 /* Mobile responsive */
@@ -85,4 +115,30 @@
     top: 5px;
     right: 5px;
   }
+  
+  .language-switcher .dropdown-toggle {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .language-switcher .dropdown-menu {
+    min-width: 120px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .language-switcher .dropdown-menu {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Ensure the switcher doesn't interfere with other elements */
+.language-switcher * {
+  box-sizing: border-box;
+}
+
+/* Animation for dropdown arrow */
+.language-switcher .dropdown-toggle[aria-expanded="true"] .dropdown-arrow {
+  transform: rotate(180deg);
 } 
