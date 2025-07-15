@@ -19,6 +19,9 @@ t:
     title: "traderL Blog"
     description: "Sharing DeFi, crypto trading strategies, and blockchain technology"
     author_bio: "Geek, trader, and blogger."
+    no_posts: "No posts available"
+    prev: "Previous"
+    next: "Next"
     nav:
       home: "Home"
       about: "About"
@@ -29,6 +32,9 @@ t:
     title: "traderL 博客"
     description: "分享defi, 加密交易策略,区块链技术"
     author_bio: "极客、交易者和博主。"
+    no_posts: "暂无文章"
+    prev: "上一页"
+    next: "下一页"
     nav:
       home: "首页"
       about: "关于"
@@ -39,6 +45,9 @@ t:
     title: "traderL ブログ"
     description: "DeFi、暗号取引戦略、ブロックチェーン技術を共有"
     author_bio: "ギーク、トレーダー、ブロガー。"
+    no_posts: "投稿がありません"
+    prev: "前へ"
+    next: "次へ"
     nav:
       home: "ホーム"
       about: "について"
@@ -49,6 +58,9 @@ t:
     title: "traderL 블로그"
     description: "DeFi, 암호화폐 거래 전략, 블록체인 기술 공유"
     author_bio: "괴짜, 트레이더, 블로거"
+    no_posts: "게시물이 없습니다"
+    prev: "이전"
+    next: "다음"
     nav:
       home: "홈"
       about: "소개"
@@ -92,13 +104,41 @@ collections:
 
 defaults:
   - scope:
-      path: ""
+      path: "_posts"
       type: posts
     values:
       layout: post
       comments: true
       toc: true
+      lang: en
       permalink: /:categories/:year/:month/:day/:title/
+  - scope:
+      path: "zh/_posts"
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      lang: zh
+      permalink: /zh/:categories/:year/:month/:day/:title/
+  - scope:
+      path: "ja/_posts"
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      lang: ja
+      permalink: /ja/:categories/:year/:month/:day/:title/
+  - scope:
+      path: "ko/_posts"
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      lang: ko
+      permalink: /ko/:categories/:year/:month/:day/:title/
   - scope:
       path: "_tabs"
       type: tabs
