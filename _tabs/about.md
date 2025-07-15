@@ -6,8 +6,6 @@ order: 4
 lang: en
 ---
 
-{% include language-switcher.html %}
-
 # About Me
 
 I'm traderL, a geek, trader, and blogger.

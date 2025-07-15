@@ -4,6 +4,4 @@ title: タグ
 icon: fas fa-tags
 order: 2
 lang: ja
----
-
-{% include language-switcher.html %} 
+--- 

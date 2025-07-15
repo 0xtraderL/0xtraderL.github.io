@@ -15,10 +15,6 @@ module Jekyll
     def current_language(page)
       page['lang'] || 'en'
     end
-    
-    def filter_by_language(posts, lang)
-      posts_by_language(posts, lang)
-    end
   end
 end
 

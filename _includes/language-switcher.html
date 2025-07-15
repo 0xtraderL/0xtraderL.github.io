@@ -1,2 +1,139 @@
-<link rel="stylesheet" href="{{ '/assets/css/language-posts.css' | relative_url }}">
-<script src="{{ '/assets/js/language-switcher.js' | relative_url }}"></script> 
+{% assign current_lang = page.lang | default: site.default_lang %}
+{% assign languages = site.languages %}
+
+<div class="language-switcher">
+  <div class="custom-dropdown">
+    <button class="dropdown-toggle" type="button" id="languageDropdown" onclick="toggleLanguageDropdown()">
+      {% case current_lang %}
+        {% when 'en' %}🇺🇸 English
+        {% when 'zh' %}🇨🇳 中文
+        {% when 'ja' %}🇯🇵 日本語
+        {% when 'ko' %}🇰🇷 한국어
+        {% else %}🇺🇸 English
+      {% endcase %}
+      <span class="dropdown-arrow">▼</span>
+    </button>
+    <ul class="dropdown-menu" id="languageDropdownMenu">
+      {% for lang in languages %}
+        {% if lang != current_lang %}
+          <li>
+            <a class="dropdown-item" href="{% if lang == site.default_lang %}/{% else %}/{{ lang }}/{% endif %}">
+              {% case lang %}
+                {% when 'en' %}🇺🇸 English
+                {% when 'zh' %}🇨🇳 中文
+                {% when 'ja' %}🇯🇵 日本語
+                {% when 'ko' %}🇰🇷 한국어
+              {% endcase %}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<script>
+function toggleLanguageDropdown() {
+  const dropdown = document.getElementById('languageDropdownMenu');
+  const arrow = document.querySelector('.dropdown-arrow');
+  
+  if (dropdown.style.display === 'block') {
+    dropdown.style.display = 'none';
+    arrow.innerHTML = '▼';
+  } else {
+    dropdown.style.display = 'block';
+    arrow.innerHTML = '▲';
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const dropdown = document.querySelector('.custom-dropdown');
+  if (!dropdown.contains(event.target)) {
+    const menu = document.getElementById('languageDropdownMenu');
+    const arrow = document.querySelector('.dropdown-arrow');
+    if (menu) {
+      menu.style.display = 'none';
+      arrow.innerHTML = '▼';
+    }
+  }
+});
+</script>
+
+<style>
+.language-switcher {
+  position: relative;
+  display: inline-block;
+}
+
+.language-switcher .custom-dropdown {
+  position: relative;
+}
+
+.language-switcher .dropdown-toggle {
+  background: var(--sidebar-bg, #f8f9fa);
+  border: 1px solid var(--btn-border-color, #dee2e6);
+  color: var(--text-color, #333);
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.language-switcher .dropdown-toggle:hover {
+  background: var(--btn-hover-bg, rgba(0, 0, 0, 0.05));
+  border-color: var(--btn-hover-border-color, #c3c8cc);
+}
+
+.language-switcher .dropdown-arrow {
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.language-switcher .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border-color, #dee2e6);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  min-width: 150px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 0.25rem;
+  display: none;
+  z-index: 1000;
+}
+
+.language-switcher .dropdown-item {
+  display: block;
+  color: var(--text-color, #333);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.language-switcher .dropdown-item:hover {
+  background: var(--btn-hover-bg, rgba(0, 0, 0, 0.05));
+  color: var(--text-color, #333);
+}
+
+@media (max-width: 576px) {
+  .language-switcher .dropdown-toggle {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .language-switcher .dropdown-menu {
+    min-width: 130px;
+  }
+}
+</style> 

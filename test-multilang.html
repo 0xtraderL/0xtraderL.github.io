@@ -1,0 +1,41 @@
+---
+layout: default
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/language-posts.css' | relative_url }}">
+
+<!-- Language Switcher - Fixed Position -->
+<div class="language-switcher-fixed">
+  {% include language-switcher.html %}
+</div>
+
+<h1>Multi-language Test</h1>
+
+<h2>Current Language: {{ page.lang | default: site.default_lang }}</h2>
+
+<h2>All Posts:</h2>
+{% for post in site.posts %}
+  <div>
+    <strong>{{ post.title }}</strong> - Language: {{ post.lang | default: 'en' }}
+  </div>
+{% endfor %}
+
+<h2>Filtered Posts by Language:</h2>
+{% assign current_lang = page.lang | default: site.default_lang %}
+{% assign filtered_posts = site.posts | posts_by_language: current_lang %}
+
+{% for post in filtered_posts %}
+  <div>
+    <strong>{{ post.title }}</strong> - Language: {{ post.lang | default: 'en' }}
+  </div>
+{% endfor %}
+
+<h2>Language Configuration:</h2>
+<ul>
+  {% for lang in site.languages %}
+    <li>{{ lang }}: {{ site.t[lang].title }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Language Switcher:</h2>
+{% include language-switcher.html %} 

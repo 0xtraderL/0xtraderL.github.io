@@ -4,6 +4,4 @@ title: 태그
 icon: fas fa-tags
 order: 2
 lang: ko
----
-
-{% include language-switcher.html %} 
+--- 
