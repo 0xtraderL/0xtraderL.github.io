@@ -1,167 +1,119 @@
-// Enhanced Language Switcher with Dynamic Creation
 (function() {
-  'use strict';
-  
-  // Get current language from URL path
-  const currentPath = window.location.pathname;
-  let currentLang = 'en';
-  
-  if (currentPath.startsWith('/zh/')) {
-    currentLang = 'zh';
-  } else if (currentPath.startsWith('/ja/')) {
-    currentLang = 'ja';
-  } else if (currentPath.startsWith('/ko/')) {
-    currentLang = 'ko';
-  }
-  
-  // Store current language
-  document.documentElement.setAttribute('lang', currentLang);
-  
-  // Language mappings
-  const languages = {
-    'en': { name: 'English', flag: '🇺🇸', path: '/' },
-    'zh': { name: '中文', flag: '🇨🇳', path: '/zh/' },
-    'ja': { name: '日本語', flag: '🇯🇵', path: '/ja/' },
-    'ko': { name: '한국어', flag: '🇰🇷', path: '/ko/' }
-  };
-  
-  // Function to switch language
-  function switchLanguage(targetLang) {
-    const currentPath = window.location.pathname;
-    const currentSearch = window.location.search;
-    
-    // Remove current language prefix from path
-    let cleanPath = currentPath;
-    Object.keys(languages).forEach(lang => {
-      if (lang !== 'en' && currentPath.startsWith(`/${lang}/`)) {
-        cleanPath = currentPath.replace(`/${lang}/`, '/');
-      }
-    });
-    
-    // Add new language prefix
-    let newPath;
-    if (targetLang === 'en') {
-      newPath = cleanPath;
-    } else {
-      newPath = `/${targetLang}${cleanPath}`;
+    // 语言配置
+    const languages = {
+        'en': 'English',
+        'zh': '中文',
+        'ja': '日本語',
+        'ko': '한국어'
+    };
+
+    // 获取当前语言
+    function getCurrentLanguage() {
+        const path = window.location.pathname;
+        if (path.startsWith('/zh/')) return 'zh';
+        if (path.startsWith('/ja/')) return 'ja';
+        if (path.startsWith('/ko/')) return 'ko';
+        return 'en';
     }
-    
-    // Navigate to new URL
-    window.location.href = newPath + currentSearch;
-  }
-  
-  // Create language switcher HTML
-  function createLanguageSwitcher() {
-    const currentLangInfo = languages[currentLang];
-    
-    const switcher = document.createElement('div');
-    switcher.className = 'language-switcher-fixed';
-    switcher.innerHTML = `
-      <div class="language-switcher">
-        <div class="custom-dropdown">
-          <button class="dropdown-toggle" type="button" id="languageDropdown">
-            ${currentLangInfo.flag} ${currentLangInfo.name}
-            <span class="dropdown-arrow">▼</span>
-          </button>
-          <ul class="dropdown-menu" id="languageDropdownMenu">
-            ${Object.keys(languages).filter(lang => lang !== currentLang).map(lang => 
-              `<li>
-                <a class="dropdown-item" href="${lang === 'en' ? '/' : `/${lang}/`}" data-lang="${lang}">
-                  ${languages[lang].flag} ${languages[lang].name}
-                </a>
-              </li>`
-            ).join('')}
-          </ul>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(switcher);
-    
-    // Add event listeners after creating the element
-    bindEvents();
-  }
-  
-  // Bind events
-  function bindEvents() {
-    const dropdownToggle = document.getElementById('languageDropdown');
-    const dropdownMenu = document.getElementById('languageDropdownMenu');
-    const dropdownArrow = document.querySelector('.dropdown-arrow');
-    const languageLinks = document.querySelectorAll('.language-switcher .dropdown-item');
-    
-    if (dropdownToggle) {
-      dropdownToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+
+    // 创建语言切换器
+    function createLanguageSwitcher() {
+        const currentLang = getCurrentLanguage();
+        const switcher = document.createElement('div');
+        switcher.className = 'language-switcher-fixed';
         
-        if (dropdownMenu.style.display === 'block') {
-          dropdownMenu.style.display = 'none';
-          dropdownArrow.innerHTML = '▼';
+        switcher.innerHTML = `
+            <div class="language-switcher">
+                <div class="custom-dropdown">
+                    <button class="dropdown-toggle" type="button" aria-expanded="false">
+                        <span class="language-label">${languages[currentLang]}</span>
+                        <span class="dropdown-arrow">▾</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/" class="dropdown-item" data-lang="en">English</a></li>
+                        <li><a href="/zh/" class="dropdown-item" data-lang="zh">中文</a></li>
+                        <li><a href="/ja/" class="dropdown-item" data-lang="ja">日本語</a></li>
+                        <li><a href="/ko/" class="dropdown-item" data-lang="ko">한국어</a></li>
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(switcher);
+        
+        // 绑定事件
+        bindSwitcherEvents(switcher);
+    }
+
+    // 绑定切换器事件
+    function bindSwitcherEvents(switcher) {
+        const toggle = switcher.querySelector('.dropdown-toggle');
+        const menu = switcher.querySelector('.dropdown-menu');
+        const items = switcher.querySelectorAll('.dropdown-item');
+
+        // 切换下拉菜单
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', !isExpanded);
+            menu.style.display = isExpanded ? 'none' : 'block';
+        });
+
+        // 点击外部关闭菜单
+        document.addEventListener('click', function(e) {
+            if (!switcher.contains(e.target)) {
+                toggle.setAttribute('aria-expanded', 'false');
+                menu.style.display = 'none';
+            }
+        });
+
+        // 语言选择事件
+        items.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetLang = this.getAttribute('data-lang');
+                const targetUrl = this.getAttribute('href');
+                
+                // 更新 URL 并刷新页面
+                window.location.href = targetUrl;
+            });
+        });
+    }
+
+    // 过滤文章（用于同一页面上的多语言文章）
+    function filterPostsByLanguage() {
+        const currentLang = getCurrentLanguage();
+        const posts = document.querySelectorAll('article, .post-preview, .post');
+        
+        posts.forEach(post => {
+            const postLang = post.getAttribute('data-lang') || 
+                           (post.querySelector('[data-lang]') ? 
+                            post.querySelector('[data-lang]').getAttribute('data-lang') : 'en');
+            
+            if (postLang !== currentLang) {
+                post.style.display = 'none';
+            } else {
+                post.style.display = '';
+            }
+        });
+    }
+
+    // 初始化
+    function init() {
+        // 页面加载完成后创建语言切换器
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                createLanguageSwitcher();
+                filterPostsByLanguage();
+            });
         } else {
-          dropdownMenu.style.display = 'block';
-          dropdownArrow.innerHTML = '▲';
+            createLanguageSwitcher();
+            filterPostsByLanguage();
         }
-      });
     }
-    
-    // Bind language switching
-    languageLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetLang = this.getAttribute('data-lang');
-        if (targetLang) {
-          switchLanguage(targetLang);
-        }
-      });
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-      const dropdown = document.querySelector('.custom-dropdown');
-      if (dropdown && !dropdown.contains(event.target)) {
-        if (dropdownMenu && dropdownArrow) {
-          dropdownMenu.style.display = 'none';
-          dropdownArrow.innerHTML = '▼';
-        }
-      }
-    });
-  }
-  
-  // Initialize when DOM is ready
-  function init() {
-    createLanguageSwitcher();
-    
-    // Store language preference
-    localStorage.setItem('preferred-language', currentLang);
-    
-    // Auto-redirect based on browser language preference (first visit only)
-    if (localStorage.getItem('first-visit') === null) {
-      const browserLang = navigator.language || navigator.userLanguage;
-      let detectedLang = 'en';
-      
-      if (browserLang.startsWith('zh')) {
-        detectedLang = 'zh';
-      } else if (browserLang.startsWith('ja')) {
-        detectedLang = 'ja';
-      } else if (browserLang.startsWith('ko')) {
-        detectedLang = 'ko';
-      }
-      
-      const isHomePage = currentPath === '/' || currentPath === '/index.html';
-      
-      if (isHomePage && detectedLang !== 'en' && currentLang === 'en') {
-        localStorage.setItem('first-visit', 'done');
-        switchLanguage(detectedLang);
-      } else {
-        localStorage.setItem('first-visit', 'done');
-      }
-    }
-  }
-  
-  // Start when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
+
+    // 启动
     init();
-  }
 })(); 
