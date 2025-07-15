@@ -73,30 +73,11 @@
         items.forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
-                const targetLang = this.getAttribute('data-lang');
                 const targetUrl = this.getAttribute('href');
                 
                 // 更新 URL 并刷新页面
                 window.location.href = targetUrl;
             });
-        });
-    }
-
-    // 过滤文章（用于同一页面上的多语言文章）
-    function filterPostsByLanguage() {
-        const currentLang = getCurrentLanguage();
-        const posts = document.querySelectorAll('article, .post-preview, .post');
-        
-        posts.forEach(post => {
-            const postLang = post.getAttribute('data-lang') || 
-                           (post.querySelector('[data-lang]') ? 
-                            post.querySelector('[data-lang]').getAttribute('data-lang') : 'en');
-            
-            if (postLang !== currentLang) {
-                post.style.display = 'none';
-            } else {
-                post.style.display = '';
-            }
         });
     }
 
@@ -106,11 +87,9 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 createLanguageSwitcher();
-                filterPostsByLanguage();
             });
         } else {
             createLanguageSwitcher();
-            filterPostsByLanguage();
         }
     }
 
