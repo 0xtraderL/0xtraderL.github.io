@@ -1,7 +1,19 @@
-// Language switcher functionality
+// Enhanced Language Switcher with Dynamic Creation
 document.addEventListener('DOMContentLoaded', function() {
-  // Get current language from page
-  const currentLang = document.documentElement.lang || 'en';
+  // Get current language from URL path
+  const currentPath = window.location.pathname;
+  let currentLang = 'en';
+  
+  if (currentPath.startsWith('/zh/')) {
+    currentLang = 'zh';
+  } else if (currentPath.startsWith('/ja/')) {
+    currentLang = 'ja';
+  } else if (currentPath.startsWith('/ko/')) {
+    currentLang = 'ko';
+  }
+  
+  // Store current language
+  document.documentElement.setAttribute('lang', currentLang);
   
   // Language mappings
   const languages = {
@@ -10,6 +22,38 @@ document.addEventListener('DOMContentLoaded', function() {
     'ja': { name: '日本語', flag: '🇯🇵', path: '/ja/' },
     'ko': { name: '한국어', flag: '🇰🇷', path: '/ko/' }
   };
+  
+  // Create language switcher HTML
+  function createLanguageSwitcher() {
+    const currentLangInfo = languages[currentLang];
+    
+    const switcher = document.createElement('div');
+    switcher.className = 'language-switcher-fixed';
+    switcher.innerHTML = `
+      <div class="language-switcher">
+        <div class="custom-dropdown">
+          <button class="dropdown-toggle" type="button" id="languageDropdown" onclick="toggleLanguageDropdown()">
+            ${currentLangInfo.flag} ${currentLangInfo.name}
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          <ul class="dropdown-menu" id="languageDropdownMenu">
+            ${Object.keys(languages).filter(lang => lang !== currentLang).map(lang => 
+              `<li>
+                <a class="dropdown-item" href="${lang === 'en' ? '/' : `/${lang}/`}">
+                  ${languages[lang].flag} ${languages[lang].name}
+                </a>
+              </li>`
+            ).join('')}
+          </ul>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(switcher);
+  }
+  
+  // Create the switcher
+  createLanguageSwitcher();
   
   // Function to switch language
   function switchLanguage(targetLang) {
@@ -36,16 +80,14 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = newPath + currentSearch;
   }
   
-  // Add event listeners to language switcher links with more robust selection
+  // Bind language switcher events
   function bindLanguageSwitcher() {
     const languageLinks = document.querySelectorAll('.language-switcher .dropdown-item');
-    console.log('Found language links:', languageLinks.length);
     
     languageLinks.forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
         const href = this.getAttribute('href');
-        console.log('Language link clicked:', href);
         
         let targetLang = 'en';
         if (href.startsWith('/zh/')) {
@@ -56,54 +98,64 @@ document.addEventListener('DOMContentLoaded', function() {
           targetLang = 'ko';
         }
         
-        console.log('Switching to language:', targetLang);
         switchLanguage(targetLang);
       });
     });
   }
   
-  // Initial binding
-  bindLanguageSwitcher();
+  // Global function for dropdown toggle
+  window.toggleLanguageDropdown = function() {
+    const dropdown = document.getElementById('languageDropdownMenu');
+    const arrow = document.querySelector('.dropdown-arrow');
+    
+    if (dropdown.style.display === 'block') {
+      dropdown.style.display = 'none';
+      arrow.innerHTML = '▼';
+    } else {
+      dropdown.style.display = 'block';
+      arrow.innerHTML = '▲';
+    }
+  };
   
-  // Re-bind after any dynamic content changes
-  setTimeout(bindLanguageSwitcher, 1000);
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(event) {
+    const dropdown = document.querySelector('.custom-dropdown');
+    if (dropdown && !dropdown.contains(event.target)) {
+      const menu = document.getElementById('languageDropdownMenu');
+      const arrow = document.querySelector('.dropdown-arrow');
+      if (menu) {
+        menu.style.display = 'none';
+        arrow.innerHTML = '▼';
+      }
+    }
+  });
+  
+  // Initialize after creating the switcher
+  setTimeout(bindLanguageSwitcher, 100);
   
   // Store language preference
   localStorage.setItem('preferred-language', currentLang);
-});
-
-// Auto-redirect based on browser language preference
-function autoRedirectLanguage() {
-  const preferredLang = localStorage.getItem('preferred-language');
-  const browserLang = navigator.language || navigator.userLanguage;
   
-  if (preferredLang) {
-    // Use stored preference
-    return;
+  // Auto-redirect based on browser language preference (first visit only)
+  if (localStorage.getItem('first-visit') === null) {
+    const browserLang = navigator.language || navigator.userLanguage;
+    let detectedLang = 'en';
+    
+    if (browserLang.startsWith('zh')) {
+      detectedLang = 'zh';
+    } else if (browserLang.startsWith('ja')) {
+      detectedLang = 'ja';
+    } else if (browserLang.startsWith('ko')) {
+      detectedLang = 'ko';
+    }
+    
+    const isHomePage = currentPath === '/' || currentPath === '/index.html';
+    
+    if (isHomePage && detectedLang !== 'en' && currentLang === 'en') {
+      localStorage.setItem('first-visit', 'done');
+      switchLanguage(detectedLang);
+    } else {
+      localStorage.setItem('first-visit', 'done');
+    }
   }
-  
-  // Auto-detect language
-  let detectedLang = 'en';
-  if (browserLang.startsWith('zh')) {
-    detectedLang = 'zh';
-  } else if (browserLang.startsWith('ja')) {
-    detectedLang = 'ja';
-  } else if (browserLang.startsWith('ko')) {
-    detectedLang = 'ko';
-  }
-  
-  // Redirect if needed
-  const currentPath = window.location.pathname;
-  const isHomePage = currentPath === '/' || currentPath === '/index.html';
-  
-  if (isHomePage && detectedLang !== 'en') {
-    window.location.href = `/${detectedLang}/`;
-  }
-}
-
-// Run auto-redirect on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', autoRedirectLanguage);
-} else {
-  autoRedirectLanguage();
-} 
+}); 
