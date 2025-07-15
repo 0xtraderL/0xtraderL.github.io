@@ -2,6 +2,13 @@
 layout: default
 ---
 
+<link rel="stylesheet" href="{{ '/assets/css/language-posts.css' | relative_url }}">
+
+<!-- Language Switcher - Fixed Position -->
+<div class="language-switcher-fixed">
+  {% include language-switcher.html %}
+</div>
+
 <h1>Multi-language Test</h1>
 
 <h2>Current Language: {{ page.lang | default: site.default_lang }}</h2>

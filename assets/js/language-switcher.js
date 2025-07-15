@@ -36,17 +36,37 @@ document.addEventListener('DOMContentLoaded', function() {
     window.location.href = newPath + currentSearch;
   }
   
-  // Add event listeners to language switcher links
-  document.querySelectorAll('.language-switcher a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const href = this.getAttribute('href');
-      const targetLang = href.startsWith('/zh/') ? 'zh' : 
-                         href.startsWith('/ja/') ? 'ja' : 
-                         href.startsWith('/ko/') ? 'ko' : 'en';
-      switchLanguage(targetLang);
+  // Add event listeners to language switcher links with more robust selection
+  function bindLanguageSwitcher() {
+    const languageLinks = document.querySelectorAll('.language-switcher .dropdown-item');
+    console.log('Found language links:', languageLinks.length);
+    
+    languageLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        console.log('Language link clicked:', href);
+        
+        let targetLang = 'en';
+        if (href.startsWith('/zh/')) {
+          targetLang = 'zh';
+        } else if (href.startsWith('/ja/')) {
+          targetLang = 'ja';
+        } else if (href.startsWith('/ko/')) {
+          targetLang = 'ko';
+        }
+        
+        console.log('Switching to language:', targetLang);
+        switchLanguage(targetLang);
+      });
     });
-  });
+  }
+  
+  // Initial binding
+  bindLanguageSwitcher();
+  
+  // Re-bind after any dynamic content changes
+  setTimeout(bindLanguageSwitcher, 1000);
   
   // Store language preference
   localStorage.setItem('preferred-language', currentLang);

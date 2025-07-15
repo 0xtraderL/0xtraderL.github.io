@@ -7,8 +7,8 @@ layout: default
 {% assign current_lang = page.lang | default: site.default_lang %}
 {% assign filtered_posts = site.posts | posts_by_language: current_lang %}
 
-<!-- Language Switcher -->
-<div class="language-switcher-container mb-4">
+<!-- Language Switcher - Fixed Position -->
+<div class="language-switcher-fixed">
   {% include language-switcher.html %}
 </div>
 

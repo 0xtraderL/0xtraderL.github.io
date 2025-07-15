@@ -1,0 +1,62 @@
+---
+layout: default
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/language-posts.css' | relative_url }}">
+
+<!-- Language Switcher - Fixed Position -->
+<div class="language-switcher-fixed">
+  {% include language-switcher.html %}
+</div>
+
+{% assign current_lang = page.lang | default: site.default_lang %}
+{% assign filtered_posts = site.posts | posts_by_language: current_lang %}
+
+<div class="row">
+  <div class="col-12">
+    <h1>{{ page.title }}</h1>
+    
+    {% if filtered_posts.size > 0 %}
+      {% assign categories = filtered_posts | map: 'categories' | flatten | uniq | sort %}
+      
+      {% for category in categories %}
+        {% assign category_posts = filtered_posts | where: 'categories', category %}
+        {% if category_posts.size > 0 %}
+          <div class="category-section mb-4">
+            <h2 class="category-title">
+              <i class="far fa-folder-open fa-fw"></i>
+              {{ category }}
+              <span class="text-muted">({{ category_posts.size }})</span>
+            </h2>
+            
+            <div class="post-list">
+              {% for post in category_posts %}
+                <div class="post-preview">
+                  <div class="post-meta">
+                    <time datetime="{{ post.date | date_to_xmlschema }}">
+                      {{ post.date | date: "%b %d, %Y" }}
+                    </time>
+                  </div>
+                  <h3 class="post-title">
+                    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                  </h3>
+                  {% if post.tags.size > 0 %}
+                    <div class="post-tags">
+                      {% for tag in post.tags %}
+                        <span class="badge bg-secondary">{{ tag }}</span>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <div class="no-posts text-center py-5">
+        <h3 class="text-muted">{{ site.t[current_lang].no_posts | default: "No posts available" }}</h3>
+      </div>
+    {% endif %}
+  </div>
+</div> 
