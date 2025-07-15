@@ -28,6 +28,8 @@ t:
       archives: "Archives"
       categories: "Categories"
       tags: "Tags"
+    panel:
+      trending_tags: "Trending Tags"
   zh:
     title: "traderL 博客"
     description: "分享defi, 加密交易策略,区块链技术"
@@ -41,6 +43,8 @@ t:
       archives: "归档"
       categories: "分类"
       tags: "标签"
+    panel:
+      trending_tags: "热门标签"
   ja:
     title: "traderL ブログ"
     description: "DeFi、暗号取引戦略、ブロックチェーン技術を共有"
@@ -54,6 +58,8 @@ t:
       archives: "アーカイブ"
       categories: "カテゴリ"
       tags: "タグ"
+    panel:
+      trending_tags: "トレンドタグ"
   ko:
     title: "traderL 블로그"
     description: "DeFi, 암호화폐 거래 전략, 블록체인 기술 공유"
@@ -67,6 +73,8 @@ t:
       archives: "아카이브"
       categories: "카테고리"
       tags: "태그"
+    panel:
+      trending_tags: "인기 태그"
 
 # Theme
 theme: jekyll-theme-chirpy
