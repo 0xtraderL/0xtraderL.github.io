@@ -1,4 +1,271 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-13T13:40:00+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">traderL Blog</title><subtitle>A blog powered by Jekyll and Chirpy.</subtitle><author><name>traderL</name><email>your-email@example.com</email></author><entry><title type="html">在sui上LP自动再平衡工具</title><link href="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="在sui上LP自动再平衡工具" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://0xtraderl.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://0xtraderl.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2025-07-15T10:57:54+08:00</updated><id>https://0xtraderl.github.io/feed.xml</id><title type="html">traderL Blog</title><subtitle>Sharing DeFi, crypto trading strategies, and blockchain technology</subtitle><author><name>traderL</name><email>your-email@example.com</email></author><entry xml:lang="en"><title type="html">Auto-Rebalance LP Tool on Sui</title><link href="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui-en/" rel="alternate" type="text/html" title="Auto-Rebalance LP Tool on Sui" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui-en</id><content type="html" xml:base="https://0xtraderl.github.io/defi/2025/06/28/auto-rebalance-sui-en/"><![CDATA[<p>When providing liquidity to concentrated liquidity pools to earn fee income, you often encounter price out-of-range situations, where the price leaves the LP liquidity position’s price range. In this case, if you don’t manually re-establish the position, you won’t earn any returns. Manual position rebalancing is somewhat tedious. Assuming the invested capital remains unchanged, based on the remaining token quantities from the original position:</p>
+
+<ol>
+  <li>Close the original position and withdraw all liquidity - this transaction requires one signature.</li>
+  <li>Consider the new position’s price range, then calculate the required amounts of tokens A and B, and swap the corresponding amounts of A or B - this swap transaction requires one signature.</li>
+  <li>Based on the quantities obtained from step 2 and the preset price range, re-add liquidity to establish the position - this requires one signature.</li>
+</ol>
+
+<p>Manual LP rebalancing requires the above 3 steps, and step 2 is difficult to calculate without tools. There are now many auto-balancing on-chain protocols like AlphaFi that can automatically rebalance when out of range, but their price ranges are determined by the protocol and cannot be adjusted according to your own strategy. Usually, the price ranges are quite large and only suitable for a few mainstream pools, making them more suitable for lazy users who don’t want to bother. I rarely use such protocols.</p>
+
+<h2 id="sui-ptb-feature-enables-one-click-rebalancing">Sui PTB Feature Enables One-Click Rebalancing</h2>
+
+<p>On Ethereum, I really don’t know how to solve this problem off-chain without using on-chain contracts. But on Sui, this problem is not a problem. Here I’ll praise Sui - Sui is truly a blockchain born to solve real problems, very suitable for developing various applications with low gas costs, high security, fast speed, and many features like sponsored transactions, ZkLogin, PTB programming, etc., which can easily implement user-friendly innovative apps.</p>
+
+<p>Let me focus on the PTB feature, which is indeed very powerful:</p>
+
+<p>PTB (Programmable Transaction Block) simply means that when building transactions off-chain, you can package multiple operations at once. It looks ordinary, but the actual application scenarios are very wide.</p>
+
+<p><strong>Problems with traditional on-chain operations:</strong></p>
+<ul>
+  <li>Complex operations need to be decomposed into multiple independent transactions</li>
+  <li>Each transaction requires separate signature confirmation, making the process tedious</li>
+  <li>If any step fails, previous operations may have already been executed</li>
+  <li>Gas fees accumulate, increasing costs</li>
+</ul>
+
+<p><strong>PTB advantages:</strong></p>
+<ul>
+  <li>Multiple operations are assembled into one transaction block off-chain</li>
+  <li>One signature, either all succeed or all fail</li>
+  <li>Atomic execution, avoiding intermediate states</li>
+  <li>Significantly reduced gas fees since it’s essentially a single transaction</li>
+</ul>
+
+<p>A practical example: LP rebalancing operation, traditional EVM way requires:</p>
+<ol>
+  <li>Withdraw liquidity → Sign confirmation → Wait</li>
+  <li>Swap tokens to adjust ratio → Sign confirmation → Wait</li>
+  <li>Re-add liquidity → Sign confirmation → Wait</li>
+</ol>
+
+<p>Using PTB:</p>
+<ol>
+  <li>Build off-chain:
+    <ul>
+      <li>Close position and withdraw liquidity to get withdrawn token amounts (transaction hasn’t executed yet, tokens are still in this transaction and can be passed to the next operation)</li>
+      <li>Swap based on token amounts from the previous step</li>
+      <li>Re-create position based on amounts from the swap step</li>
+    </ul>
+  </li>
+  <li>Submit the above transaction with one signature</li>
+  <li>Atomic execution on-chain</li>
+</ol>
+
+<p>Using PTB, you can even perform flash loan arbitrage off-chain, which on Ethereum systems can only be done by developing contracts.</p>
+
+<p>This is why I can implement one-click rebalancing on Sui, while on other chains, such operations have high costs and complexity.</p>
+
+<h2 id="my-workflow">My Workflow</h2>
+
+<ol>
+  <li>Initially invest capital to create position</li>
+  <li>Monitor position status, send Telegram notifications when out of range</li>
+  <li>After going out of range, use rebalancing workflow to keep the original position earning returns in the current price range</li>
+  <li>Observe historical position returns and adjust position price amplitude</li>
+</ol>
+
+<p>LP profit statistics:
+<img src="/assets/img/posts/2025-06-28/1.webp" alt="LP Profit Statistics" /></p>
+
+<p>LP rebalancing execution process:
+<img src="/assets/img/posts/2025-06-28/3.png" alt="LP Rebalancing Process" /></p>
+
+<p>Workflow tools used:</p>
+
+<ul>
+  <li>Position out-of-range monitoring</li>
+  <li>One-click rebalancing
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-automated-percentage-based-rebalancing">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/mmt-automated-liquidity-position-rebalancing">Momentum</a></li>
+    </ul>
+  </li>
+  <li>Historical position returns (LP vs Holding)
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-yield-comparison-lp-vs-holding">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/momentum-pool-yield-comparison-lp-vs-holding">Momentum</a></li>
+    </ul>
+  </li>
+</ul>]]></content><author><name>traderL</name><email>your-email@example.com</email></author><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[When providing liquidity to concentrated liquidity pools to earn fee income, you often encounter price out-of-range situations, where the price leaves the LP liquidity position’s price range. In this case, if you don’t manually re-establish the position, you won’t earn any returns. Manual position rebalancing is somewhat tedious. Assuming the invested capital remains unchanged, based on the remaining token quantities from the original position:]]></summary></entry><entry xml:lang="ja"><title type="html">Sui上でのLP自動リバランスツール</title><link href="https://0xtraderl.github.io/ja/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="Sui上でのLP自動リバランスツール" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/ja/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/ja/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>集中流動性プールでLPを組んで手数料収益を得る際、価格が範囲外になること、つまりLP流動性ポジションの価格範囲から外れる状況によく遭遇します。この場合、手動でポジションを再構築しなければ、収益を得ることができません。手動でのポジションリバランスは少し面倒です。投入資金が変わらないと仮定して、元のポジションの残りトークン数量に基づいて計算すると：</p>
+
+<ol>
+  <li>元のポジションを閉じて、すべての流動性を引き出す - この取引には1回の署名が必要です。</li>
+  <li>新しいポジションの価格範囲を考慮して、必要なトークンAとBの量を計算し、対応する量のAまたはBをスワップする - このスワップ取引には1回の署名が必要です。</li>
+  <li>ステップ2で得られた量と事前設定された価格範囲に基づいて、流動性を再追加してポジションを確立する - これには1回の署名が必要です。</li>
+</ol>
+
+<p>手動でのLPリバランスには上記の3つのステップが必要で、ステップ2はツールなしでは計算が困難です。現在、AlphaFiなどの多くの自動バランシングオンチェーンプロトコルがあり、範囲外になったときに自動でバランスを取ることができますが、価格範囲はプロトコルによって決定され、自身の戦略に応じて調整することはできません。通常、価格範囲は非常に大きく、少数の主要プールにのみ適用され、面倒を避けたい怠け者のユーザーに適しています。私はこのようなプロトコルをほとんど使用しません。</p>
+
+<h2 id="sui-ptb機能による1クリックリバランス">Sui PTB機能による1クリックリバランス</h2>
+
+<p>イーサリアムでは、オンチェーンコントラクトを使用せずにオフチェーンでこの問題を解決する方法を実際に知りません。しかし、Suiでは、この問題は問題ではありません。ここでSuiを褒めさせてください - Suiは実際の問題を解決するために生まれたブロックチェーンであり、様々なアプリケーションの開発に非常に適しており、ガスコストが低く、セキュリティが高く、速度も速く、スポンサー取引、ZkLogin、PTBプログラミングなどの多くの機能があり、ユーザーフレンドリーで革新的なアプリを簡単に実装できます。</p>
+
+<p>PTB機能に焦点を当てましょう。これは実際に非常に強力です：</p>
+
+<p>PTB（Programmable Transaction Block）とは、簡単に言えば、オフチェーンでトランザクションを構築する際に、複数の操作を一度にパッケージできることです。普通に見えますが、実際の応用シナリオは非常に広いです。</p>
+
+<p><strong>従来のオンチェーン操作の問題：</strong></p>
+<ul>
+  <li>複雑な操作を複数の独立したトランザクションに分解する必要がある</li>
+  <li>各トランザクションには個別の署名確認が必要で、プロセスが煩雑</li>
+  <li>任意のステップが失敗すると、前の操作が既に実行されている可能性がある</li>
+  <li>ガス手数料が蓄積し、コストが増加する</li>
+</ul>
+
+<p><strong>PTBの利点：</strong></p>
+<ul>
+  <li>複数の操作をオフチェーンで1つのトランザクションブロックに組み立てる</li>
+  <li>1回の署名で、すべて成功するかすべて失敗するか</li>
+  <li>アトミック実行で、中間状態を回避</li>
+  <li>本質的に単一のトランザクションであるため、ガス手数料が大幅に削減</li>
+</ul>
+
+<p>実際の例：LPリバランス操作、従来のEVMの方法では：</p>
+<ol>
+  <li>流動性を引き出す → 署名確認 → 待機</li>
+  <li>トークンをスワップして比率を調整する → 署名確認 → 待機</li>
+  <li>流動性を再追加する → 署名確認 → 待機</li>
+</ol>
+
+<p>PTBを使用する場合：</p>
+<ol>
+  <li>オフチェーン構築：
+    <ul>
+      <li>ポジションを閉じて流動性を引き出し、引き出されたトークン量を取得（トランザクションはまだ実行されておらず、トークンはまだこのトランザクション内にあり、次の操作に渡すことができます）</li>
+      <li>前のステップのトークン量に基づいてスワップ</li>
+      <li>スワップステップの量に基づいてポジションを再作成</li>
+    </ul>
+  </li>
+  <li>上記のトランザクションを1回の署名で提出</li>
+  <li>オンチェーンでアトミック実行</li>
+</ol>
+
+<p>PTBを使用すると、オフチェーンでフラッシュローンアービトラージを実行することもできます。これはイーサリアムシステムではコントラクトを開発することによってのみ可能です。</p>
+
+<p>これが私がSuiで1クリックリバランスを実装できる理由であり、他のチェーンではこのような操作のコストと複雑さが高いのです。</p>
+
+<h2 id="私のワークフロー">私のワークフロー</h2>
+
+<ol>
+  <li>最初に資金を投入してポジションを作成</li>
+  <li>ポジションの状態を監視し、範囲外になったらTelegram通知を送信</li>
+  <li>範囲外になった後、リバランスワークフローを使用して、元のポジションが現在の価格範囲で収益を得続けるようにする</li>
+  <li>履歴ポジションの収益を観察し、ポジションの価格振幅を調整</li>
+</ol>
+
+<p>LP収益統計：
+<img src="/assets/img/posts/2025-06-28/1.webp" alt="LP収益統計" /></p>
+
+<p>LPリバランス実行プロセス：
+<img src="/assets/img/posts/2025-06-28/3.png" alt="LPリバランス実行プロセス" /></p>
+
+<p>使用したワークフローツール：</p>
+
+<ul>
+  <li>ポジション範囲外監視</li>
+  <li>1クリックリバランス
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-automated-percentage-based-rebalancing">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/mmt-automated-liquidity-position-rebalancing">Momentum</a></li>
+    </ul>
+  </li>
+  <li>履歴ポジション収益（LP vs Holding）
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-yield-comparison-lp-vs-holding">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/momentum-pool-yield-comparison-lp-vs-holding">Momentum</a></li>
+    </ul>
+  </li>
+</ul>]]></content><author><name>traderL</name><email>your-email@example.com</email></author><category term="ja" /><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[集中流動性プールでLPを組んで手数料収益を得る際、価格が範囲外になること、つまりLP流動性ポジションの価格範囲から外れる状況によく遭遇します。この場合、手動でポジションを再構築しなければ、収益を得ることができません。手動でのポジションリバランスは少し面倒です。投入資金が変わらないと仮定して、元のポジションの残りトークン数量に基づいて計算すると：]]></summary></entry><entry xml:lang="ko"><title type="html">Sui에서 LP 자동 리밸런싱 도구</title><link href="https://0xtraderl.github.io/ko/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="Sui에서 LP 자동 리밸런싱 도구" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/ko/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/ko/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>집중 유동성 풀에서 LP를 구성하여 수수료 수익을 얻을 때, 가격이 범위를 벗어나는 상황, 즉 LP 유동성 포지션의 가격 범위를 벗어나는 경우를 자주 접하게 됩니다. 이 경우 수동으로 포지션을 재구축하지 않으면 수익을 얻을 수 없습니다. 수동 포지션 리밸런싱은 다소 번거롭습니다. 투입 자금이 변하지 않는다고 가정하고, 기존 포지션의 남은 토큰 수량을 기준으로 계산하면:</p>
+
+<ol>
+  <li>기존 포지션을 닫고 모든 유동성을 인출 - 이 거래에는 1번의 서명이 필요합니다.</li>
+  <li>새로운 포지션의 가격 범위를 고려하여 필요한 토큰 A와 B의 양을 계산하고, 해당 양의 A 또는 B를 스왑 - 이 스왑 거래에는 1번의 서명이 필요합니다.</li>
+  <li>2단계에서 얻은 양과 미리 설정된 가격 범위를 기준으로 유동성을 재추가하여 포지션을 구축 - 이는 1번의 서명이 필요합니다.</li>
+</ol>
+
+<p>수동 LP 리밸런싱에는 위의 3단계가 필요하며, 2단계는 도구 없이는 계산하기 어렵습니다. 현재 AlphaFi와 같은 많은 자동 균형 조정 온체인 프로토콜이 있어 범위를 벗어났을 때 자동으로 균형을 맞출 수 있지만, 가격 범위는 프로토콜에 의해 결정되며 자신의 전략에 따라 조정할 수 없습니다. 일반적으로 가격 범위가 매우 크고 소수의 주요 풀에만 적용되어 번거로움을 피하려는 게으른 사용자에게 적합합니다. 저는 이런 프로토콜을 거의 사용하지 않습니다.</p>
+
+<h2 id="sui-ptb-기능으로-원클릭-리밸런싱-구현">Sui PTB 기능으로 원클릭 리밸런싱 구현</h2>
+
+<p>이더리움에서는 온체인 컨트랙트를 사용하지 않고 오프체인에서 이 문제를 해결하는 방법을 정말 모르겠습니다. 하지만 Sui에서는 이 문제가 문제가 아닙니다. 여기서 Sui를 칭찬하겠습니다 - Sui는 실제 문제를 해결하기 위해 태어난 블록체인이며, 다양한 애플리케이션 개발에 매우 적합하고, 가스 비용이 낮고, 보안성이 높고, 속도도 빠르며, 후원 거래, ZkLogin, PTB 프로그래밍 등 많은 기능이 있어 사용자 친화적이고 혁신적인 앱을 쉽게 구현할 수 있습니다.</p>
+
+<p>PTB 기능에 초점을 맞춰 보겠습니다. 이는 정말 강력합니다:</p>
+
+<p>PTB(Programmable Transaction Block)는 간단히 말해, 오프체인에서 트랜잭션을 구축할 때 여러 작업을 한 번에 패키징할 수 있다는 의미입니다. 평범해 보이지만 실제 응용 시나리오는 매우 광범위합니다.</p>
+
+<p><strong>기존 온체인 작업의 문제점:</strong></p>
+<ul>
+  <li>복잡한 작업을 여러 독립적인 트랜잭션으로 분해해야 함</li>
+  <li>각 트랜잭션마다 별도의 서명 확인이 필요하여 프로세스가 번거로움</li>
+  <li>어떤 단계든 실패하면 이전 작업이 이미 실행되었을 수 있음</li>
+  <li>가스 수수료가 누적되어 비용이 높아짐</li>
+</ul>
+
+<p><strong>PTB의 장점:</strong></p>
+<ul>
+  <li>여러 작업을 오프체인에서 하나의 트랜잭션 블록으로 조립</li>
+  <li>한 번의 서명으로 모두 성공하거나 모두 실패</li>
+  <li>원자적 실행으로 중간 상태 방지</li>
+  <li>본질적으로 단일 트랜잭션이므로 가스 수수료가 크게 절감됨</li>
+</ul>
+
+<p>실제 예시: LP 리밸런싱 작업, 기존 EVM 방식에서는:</p>
+<ol>
+  <li>유동성 인출 → 서명 확인 → 대기</li>
+  <li>토큰 스왑으로 비율 조정 → 서명 확인 → 대기</li>
+  <li>유동성 재추가 → 서명 확인 → 대기</li>
+</ol>
+
+<p>PTB 사용시:</p>
+<ol>
+  <li>오프체인 구축:
+    <ul>
+      <li>포지션을 닫고 유동성을 인출하여 인출된 토큰 양 획득 (트랜잭션이 아직 실행되지 않았고, 토큰은 여전히 이 트랜잭션 내에 있어 다음 작업으로 전달 가능)</li>
+      <li>이전 단계의 토큰 양을 기준으로 스왑</li>
+      <li>스왑 단계의 양을 기준으로 포지션 재생성</li>
+    </ul>
+  </li>
+  <li>위의 트랜잭션을 한 번의 서명으로 제출</li>
+  <li>온체인에서 원자적 실행</li>
+</ol>
+
+<p>PTB를 사용하면 오프체인에서 플래시론 차익거래도 수행할 수 있습니다. 이는 이더리움 시스템에서는 컨트랙트를 개발해야만 가능한 것입니다.</p>
+
+<p>이것이 제가 Sui에서 원클릭 리밸런싱을 구현할 수 있는 이유이며, 다른 체인에서는 이런 작업의 비용과 복잡성이 높은 이유입니다.</p>
+
+<h2 id="나의-워크플로우">나의 워크플로우</h2>
+
+<ol>
+  <li>자금을 투입하여 처음으로 포지션 생성</li>
+  <li>포지션 상태를 모니터링하고, 범위를 벗어나면 텔레그램 알림 발송</li>
+  <li>범위를 벗어난 후, 리밸런싱 워크플로우를 사용하여 기존 포지션이 현재 가격 범위에서 계속 수익을 얻도록 함</li>
+  <li>역사적 포지션 수익을 관찰하고 포지션의 가격 변동폭을 조정</li>
+</ol>
+
+<p>LP 수익 통계:
+<img src="/assets/img/posts/2025-06-28/1.webp" alt="LP 수익 통계" /></p>
+
+<p>LP 리밸런싱 실행 과정:
+<img src="/assets/img/posts/2025-06-28/3.png" alt="LP 리밸런싱 실행 과정" /></p>
+
+<p>사용한 워크플로우 도구:</p>
+
+<ul>
+  <li>포지션 범위 이탈 모니터링</li>
+  <li>원클릭 리밸런싱
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-automated-percentage-based-rebalancing">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/mmt-automated-liquidity-position-rebalancing">Momentum</a></li>
+    </ul>
+  </li>
+  <li>역사적 포지션 수익 (LP vs Holding)
+    <ul>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/bluefin-spot-yield-comparison-lp-vs-holding">Bluefin</a></li>
+      <li><a href="https://app.kamechan.xyz/workflow/traderL/momentum-pool-yield-comparison-lp-vs-holding">Momentum</a></li>
+    </ul>
+  </li>
+</ul>]]></content><author><name>traderL</name><email>your-email@example.com</email></author><category term="ko" /><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[집중 유동성 풀에서 LP를 구성하여 수수료 수익을 얻을 때, 가격이 범위를 벗어나는 상황, 즉 LP 유동성 포지션의 가격 범위를 벗어나는 경우를 자주 접하게 됩니다. 이 경우 수동으로 포지션을 재구축하지 않으면 수익을 얻을 수 없습니다. 수동 포지션 리밸런싱은 다소 번거롭습니다. 투입 자금이 변하지 않는다고 가정하고, 기존 포지션의 남은 토큰 수량을 기준으로 계산하면:]]></summary></entry><entry xml:lang="zh"><title type="html">在sui上LP自动再平衡工具</title><link href="https://0xtraderl.github.io/zh/defi/2025/06/28/auto-rebalance-sui/" rel="alternate" type="text/html" title="在sui上LP自动再平衡工具" /><published>2025-06-28T12:00:00+08:00</published><updated>2025-06-28T12:00:00+08:00</updated><id>https://0xtraderl.github.io/zh/defi/2025/06/28/auto-rebalance-sui</id><content type="html" xml:base="https://0xtraderl.github.io/zh/defi/2025/06/28/auto-rebalance-sui/"><![CDATA[<p>在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：</p>
 
 <ol>
   <li>关闭原有的仓位，提取所有流动性, 这里的交易需要签名一次。</li>
@@ -87,4 +354,4 @@
       <li><a href="https://app.kamechan.xyz/workflow/traderL/momentum-pool-yield-comparison-lp-vs-holding">Momentum</a></li>
     </ul>
   </li>
-</ul>]]></content><author><name>traderL</name><email>your-email@example.com</email></author><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：]]></summary></entry></feed>
+</ul>]]></content><author><name>traderL</name><email>your-email@example.com</email></author><category term="zh" /><category term="DeFi" /><category term="defi" /><category term="bluefin" /><category term="sui" /><category term="clmm" /><summary type="html"><![CDATA[在集中流动性池组LP赚手续费收益时，经常会遇到价格越界, 即脱离LP流动性仓位的价格区间的情况。这时候不去手动重新建立仓位的话，收不到任何收益。手动重组仓位有点繁琐，假设要投入的资金不变，按原有仓位的剩余币种数量计算：]]></summary></entry></feed>
