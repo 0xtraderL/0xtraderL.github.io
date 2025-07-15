@@ -7,13 +7,23 @@ layout: default
 {% assign current_lang = page.lang | default: site.default_lang %}
 {% assign filtered_posts = site.posts | posts_by_language: current_lang %}
 
+<!-- Language Switcher -->
+<div class="language-switcher-container mb-4">
+  {% include language-switcher.html %}
+</div>
+
 <div id="post-list" class="flex-grow-1 px-xl-1">
   {% for post in filtered_posts limit: 10 %}
     {% assign post_lang = post.lang | default: 'en' %}
     {% if post_lang == current_lang %}
       <article class="card-wrapper card">
         <a href="{{ post.url | relative_url }}" class="post-preview row g-0 flex-md-row-reverse">
-          <div class="col-md-12">
+          {% if post.image %}
+            <div class="col-md-5">
+              <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="preview-img">
+            </div>
+          {% endif %}
+          <div class="col-md-{% if post.image %}7{% else %}12{% endif %}">
             <div class="card-body d-flex flex-column">
               <h1 class="card-title my-2 mt-md-0">{{ post.title }}</h1>
               
@@ -66,39 +76,20 @@ layout: default
   {% endif %}
 </div>
 
-<!-- Pagination -->
+<!-- Simple pagination -->
 {% if filtered_posts.size > 10 %}
   <nav class="pagination-wrapper mt-4 mb-0">
     <div class="pagination justify-content-center">
-      <!-- Previous page -->
       {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path | relative_url }}" class="page-link">
-          <i class="fas fa-angle-left"></i>
+        <a href="{{ paginator.previous_page_path | relative_url }}" class="btn btn-outline-primary me-2">
+          <i class="fas fa-angle-left"></i> {{ site.t[current_lang].prev | default: "Previous" }}
         </a>
-      {% else %}
-        <span class="page-link disabled">
-          <i class="fas fa-angle-left"></i>
-        </span>
       {% endif %}
       
-      <!-- Page numbers -->
-      {% for page_num in (1..paginator.total_pages) %}
-        {% if page_num == paginator.page %}
-          <span class="page-link active">{{ page_num }}</span>
-        {% else %}
-          <a href="{{ site.paginate_path | replace: ':num', page_num | relative_url }}" class="page-link">{{ page_num }}</a>
-        {% endif %}
-      {% endfor %}
-      
-      <!-- Next page -->
       {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path | relative_url }}" class="page-link">
-          <i class="fas fa-angle-right"></i>
+        <a href="{{ paginator.next_page_path | relative_url }}" class="btn btn-outline-primary">
+          {{ site.t[current_lang].next | default: "Next" }} <i class="fas fa-angle-right"></i>
         </a>
-      {% else %}
-        <span class="page-link disabled">
-          <i class="fas fa-angle-right"></i>
-        </span>
       {% endif %}
     </div>
   </nav>

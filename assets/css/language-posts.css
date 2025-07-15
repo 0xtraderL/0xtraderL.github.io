@@ -1,147 +1,93 @@
-/* Chirpy Theme Compatible Language Posts Styles */
+/* Language Switcher Container */
+.language-switcher-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0;
+}
 
-#post-list .card-wrapper {
-  margin-bottom: 1.5rem;
+/* Language Switcher Styles */
+.language-switcher {
+  position: relative;
+}
+
+.language-switcher .dropdown-toggle {
+  background: transparent;
+  border: 1px solid var(--btn-border-color, #dee2e6);
+  color: var(--text-color, inherit);
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
   transition: all 0.3s ease;
 }
 
-#post-list .card-wrapper:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+.language-switcher .dropdown-toggle:hover {
+  background: var(--btn-hover-bg, rgba(0, 0, 0, 0.05));
+  border-color: var(--btn-hover-border-color, #c3c8cc);
 }
 
-#post-list .post-preview {
-  text-decoration: none;
-  color: inherit;
-}
-
-#post-list .post-preview:hover {
-  color: inherit;
-}
-
-#post-list .card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--heading-color);
-}
-
-#post-list .card-text {
-  color: var(--text-muted-color);
-  line-height: 1.6;
-}
-
-#post-list .post-meta {
-  font-size: 0.875rem;
-  color: var(--text-muted-color);
-}
-
-#post-list .post-meta i {
-  opacity: 0.8;
-}
-
-#post-list .post-meta .categories {
-  font-weight: 500;
-}
-
-#post-list .post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-#post-list .post-tags .badge {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  background: var(--tag-bg);
-  color: var(--tag-color);
+.language-switcher .dropdown-menu {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--card-border-color, #dee2e6);
   border-radius: 0.375rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  min-width: 150px;
 }
 
+.language-switcher .dropdown-item {
+  color: var(--text-color, inherit);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: background-color 0.3s ease;
+}
+
+.language-switcher .dropdown-item:hover {
+  background: var(--btn-hover-bg, rgba(0, 0, 0, 0.05));
+  color: var(--text-color, inherit);
+}
+
+/* No posts message */
 .no-posts {
-  min-height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted-color, #6c757d);
 }
 
-.no-posts h3 {
-  font-size: 1.5rem;
-  opacity: 0.7;
-}
-
-/* Pagination styling to match Chirpy theme */
+/* Pagination wrapper */
 .pagination-wrapper {
   display: flex;
   justify-content: center;
+  margin-top: 2rem;
 }
 
 .pagination-wrapper .pagination {
-  gap: 0.25rem;
-  margin-bottom: 0;
+  gap: 0.5rem;
 }
 
-.pagination-wrapper .page-link {
-  padding: 0.375rem 0.75rem;
-  margin: 0 0.125rem;
-  border: 1px solid var(--btn-border-color);
+/* Preview image styling */
+.preview-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
   border-radius: 0.375rem;
-  background: var(--btn-bg);
-  color: var(--text-color);
-  text-decoration: none;
-  transition: all 0.3s ease;
 }
 
-.pagination-wrapper .page-link:hover {
-  background: var(--btn-hover-bg);
-  border-color: var(--btn-hover-border-color);
-  color: var(--btn-hover-color);
-}
-
-.pagination-wrapper .page-link.active {
-  background: var(--btn-active-bg);
-  border-color: var(--btn-active-border-color);
-  color: var(--btn-active-color);
-}
-
-.pagination-wrapper .page-link.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  #post-list .card-wrapper {
-    background: var(--card-bg);
-    border-color: var(--card-border-color);
-  }
-  
-  .no-posts h3 {
-    color: var(--text-muted-color);
-  }
-}
-
-/* Responsive design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  #post-list .card-wrapper {
-    margin-bottom: 1rem;
+  .language-switcher-container {
+    justify-content: center;
+    padding: 0.5rem 0;
   }
   
-  #post-list .card-title {
-    font-size: 1.125rem;
-  }
-  
-  #post-list .post-tags {
-    gap: 0.125rem;
-  }
-  
-  #post-list .post-tags .badge {
-    font-size: 0.6875rem;
-    padding: 0.125rem 0.375rem;
-  }
-  
-  .pagination-wrapper .page-link {
+  .language-switcher .dropdown-toggle {
+    font-size: 0.8rem;
     padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
+  }
+  
+  .preview-img {
+    height: 150px;
+  }
+  
+  .no-posts {
+    padding: 2rem 1rem;
   }
 } 
