@@ -2,11 +2,59 @@ title: traderL Blog
 lang: en
 url: "https://0xtraderl.github.io"
 description: >-
-  A blog powered by Jekyll and Chirpy.
+  Sharing DeFi, crypto trading strategies, and blockchain technology
 author:
   name: traderL
   bio: Geek, trader, and blogger.
   email: your-email@example.com
+
+# Internationalization settings
+languages: ["en", "zh", "ja", "ko"]
+default_lang: "en"
+exclude_from_localization: ["assets", "google471642604076fc48.html"]
+
+# Language-specific configurations
+t:
+  en:
+    title: "traderL Blog"
+    description: "Sharing DeFi, crypto trading strategies, and blockchain technology"
+    author_bio: "Geek, trader, and blogger."
+    nav:
+      home: "Home"
+      about: "About"
+      archives: "Archives"
+      categories: "Categories"
+      tags: "Tags"
+  zh:
+    title: "traderL 博客"
+    description: "分享defi, 加密交易策略,区块链技术"
+    author_bio: "极客、交易者和博主。"
+    nav:
+      home: "首页"
+      about: "关于"
+      archives: "归档"
+      categories: "分类"
+      tags: "标签"
+  ja:
+    title: "traderL ブログ"
+    description: "DeFi、暗号取引戦略、ブロックチェーン技術を共有"
+    author_bio: "ギーク、トレーダー、ブロガー。"
+    nav:
+      home: "ホーム"
+      about: "について"
+      archives: "アーカイブ"
+      categories: "カテゴリ"
+      tags: "タグ"
+  ko:
+    title: "traderL 블로그"
+    description: "DeFi, 암호화폐 거래 전략, 블록체인 기술 공유"
+    author_bio: "괴짜, 트레이더, 블로거"
+    nav:
+      home: "홈"
+      about: "소개"
+      archives: "아카이브"
+      categories: "카테고리"
+      tags: "태그"
 
 # Theme
 theme: jekyll-theme-chirpy
@@ -57,6 +105,18 @@ defaults:
     values:
       layout: page
       permalink: /:title/
+  - scope:
+      path: "zh"
+    values:
+      lang: zh
+  - scope:
+      path: "ja"
+    values:
+      lang: ja
+  - scope:
+      path: "ko"
+    values:
+      lang: ko
 
 # Exclude from processing
 exclude:

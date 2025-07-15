@@ -1,8 +1,18 @@
 ---
 layout: page
-icon: fas fa-user
-order: 4
 title: About
+icon: fas fa-info-circle
+order: 4
+lang: en
 ---
 
-This is the personal blog of 0xtraderL. Here you'll find articles on technology, trading, and more. 
+# About Me
+
+I'm traderL, a geek, trader, and blogger.
+
+This blog mainly shares content about DeFi, blockchain technology, and trading strategies.
+
+## Contact
+
+- GitHub: [0xtraderL](https://github.com/0xtraderL)
+- Email: your-email@example.com 

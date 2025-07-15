@@ -1,7 +1,7 @@
 ---
 layout: tags
-title: Tags
+title: タグ
 icon: fas fa-tags
 order: 2
-lang: en
+lang: ja
 --- 

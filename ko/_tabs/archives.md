@@ -1,7 +1,7 @@
 ---
 layout: archives
-title: Archives
+title: 아카이브
 icon: fas fa-archive
 order: 3
-lang: en
+lang: ko
 --- 
